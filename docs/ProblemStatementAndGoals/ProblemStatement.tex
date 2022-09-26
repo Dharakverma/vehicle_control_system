@@ -46,7 +46,7 @@ manipulate the environment using actuators to achieve the
 desired state. They convert a physical stimulus (from the 
 environment, including a user) into a control signal for a 
 component. Some examples of control systems seen in modern 
-cars today are engine/transmission controls, HVAC controls,
+cars today are engine/transmission controls, HVAC controls, 
 battery management (in hybrid/electric vehicles, anti-lock 
 braking (ABS) and electronic stability program (ESP).
 
@@ -76,6 +76,68 @@ Use abstraction so that you can avoid details.}
 
 \section{Goals}
 
+\begin{table}[hp]
+\caption{Goals} \label{TblGoals}
+\begin{tabularx}{\textwidth}{llX}
+\toprule
+\textbf{Goal} & \textbf{Description}\\
+\midrule
+Reliability of output & Ensure that state of the vehicle 
+control system corresponds to the physical state of the 
+vehicle including motor RPM, battery state of charge, and 
+all driver inputs such as ready-to-drive button, emergency shutoff, 
+and pedal inputs. Validate that the control system accurately 
+takes feedback from the various vehicle sub-systems and commands 
+state changes as required. Verify that all commanded sub-system 
+state changes are as expected and can be replicated. \\
+FSAE rules compliance & Ensure that the vehicle startup and 
+shutdown sequence follow the FSAE rules. This will be achieved by 
+creating flowcharts depicting the required state of each model based 
+on user input and the rules-defined timing based state changes. We can 
+then validate the output state changes of our control system with our 
+flowchart for a 1:1 match.\\
+Maintainability & We will ensure future maintainability of our control 
+system by separating all sub-systems into individual simulink models and 
+controlling them via an overarching state machine. For example, we can 
+create a single model for controlling a motor, and then utilize that 
+model multiple times to enable a four-wheel drive system. We will also 
+ensure all our models are thoroughly documented both inside the Simulink 
+model itself and via project documentation.\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
 \section{Stretch Goals}
+
+\begin{table}[hp]
+\caption{Stretch Goals} \label{TblStretchGoals}
+\begin{tabularx}{\textwidth}{llX}
+\toprule
+\textbf{Goal} & \textbf{Description}\\
+\midrule
+Vehicle Dynamics - Stability control is a great feature for keeping a 
+vehicle on the road, and heading towards an intended direction, commanded 
+by the driver. This is done by checking the position of the steering wheel, 
+and comparing it to the z-axis rotation of the vehicle. When the driver 
+commands a turn and the vehicle is slow to react, wheel slipping is detected. 
+To reduce/eliminate the loss of traction, the vehicle can brake the wheels 
+closest to the apex of a corner, to help apply a rotational moment on the 
+vehicle and assist the driver to turn the vehicle around a corner. \\
+Vehicle dynamics - torque vectoring & Torque vectoring works similar to a 
+vehicle stability control program, except in this case, the creation of a 
+moment on the z-axis of a vehicle is purely done through acceleration. This 
+means that when acceleration of the vehicle is requested through the accelerator 
+pedal, based on steering direction, the vehicle can vary torque to different sides 
+of a vehicle. Usually when going around a corner, the torque will be applied to 
+the wheels furthest from the corner apex, helping apply a moment on the z-axis of 
+the vehicle to help achieve higher cornering velocities along with increased driver 
+confidence.\\
+Over the air data acquisition & Over-the-air data acquisition will allow us to 
+gain vital vehicle data, while the vehicle is out running laps. This can help 
+us diagnose any issues live, if we see any anomalies in the control system, 
+increasing vehicle performance and safety.\\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 \end{document}
