@@ -53,6 +53,30 @@ one hour. Ad hoc meetings will be held as needed.
 
 \section{Workflow Plan}
 
+The public Github repository will be the location where the project is.
+Since there are multiple subsystems that will be worked on synchronously,
+new branches will be created. Our convention used for branch naming will be
+“Subsystem Name - Major Feature Being Added”. An example for this will be 
+“Battery Management System - CAN Signals”. Once a significant feature has 
+reached sufficient progress, a pull request will be made and a different 
+team member will review the change. If there are contentions made by the 
+reviewer, a comment will be added to the pull request. If it has no issues 
+it will be merged into the main branch.
+
+
+To make it easier to track updates to the branches, detailed comments will 
+also be required from each team member on all commits. The frequency of 
+commits will not be strictly monitored but the general rule of thumb is to
+commit every 30 min (assuming continuous lines of code were being typed), 
+or once a subfeature has been implemented (e.g a bug regarding device 
+connectivity has been fixed). 
+
+Subfeature tasks will be tracked and managed on Kanban board (Github 
+project). Every week there will be a meeting to decide on the tasks for the
+upcoming week (and potentially beyond), Tasks will then be assigned to the 
+appropriate team member. Any issues or questions regarding the tasks can be 
+added as a comment to the specific task on the board.
+
 \begin{itemize}
 	\item How will you be using git, including branches, pull request, etc.?
 	\item How will you be managing issues, including template issues, issue
