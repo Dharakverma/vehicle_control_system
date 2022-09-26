@@ -63,10 +63,36 @@ be working with the embedded hardware provided by MAC Formula Electric for
 implementing and testing our control system once software-based simulation and 
 validation is complete.
 
-\subsection{Inputs and Outputs}
+\subsection{Inputs}
+Inputs to the control system are sourced from the various hardware sub-systems 
+of the vehicle, such as the battery management system, motor controller kit, 
+inertial sensors (accelerometer, gyroscope), and driver inputs via steering 
+and pedal sensors.Inputs from the battery management system regarding its 
+current state, battery module temperatures, voltage output, and current draw 
+must all be within safe operating specifications and thus will play a large 
+role in the overall state of the vehicle control system. 
+To comply with FSAE rulesets regarding the enabling of the tractive system, 
+entering ready-to-drive mode, and safely shutting the vehicle down, the control 
+system must also take input from the vehicle’s driver via physical push buttons 
+mounted on the steering wheel. Lastly, the control system will be responsible 
+for communication with the motor controllers which will be based on inputs from 
+the driver via the pedal tray.All the aforementioned inputs to the control system 
+will play a role in dictating the current state of the vehicle and its various 
+sub-systems.
 
-\wss{Characterize the problem in terms of ``high level'' inputs and outputs.  
-Use abstraction so that you can avoid details.}
+\subsection{Outputs}
+Based on the hardware and system state inputs described above, our control system 
+should output digital control signals for the vehicle’s actuators within each of 
+the vehicle’s subsystems, such as battery, cooling, and motor controllers.Some 
+vehicle systems work independently of each other. For example, the battery cooling 
+loop must only enable once a set temperature is met, and fan speed is modulated 
+based on heat generation and battery module temperatures. On the other hand, there 
+are systems in the vehicle, for example the systems that control vehicle propulsion, 
+that must work together in order to propel the vehicle. A simple push of the 
+accelerator pedal must translate to various messages to the battery management system 
+and motor controllers. These systems must be controlled and work in unisense to 
+propel the vehicle forward. All of these considerations and limitations must be 
+accounted for when programming of the vehicle control system commences.
 
 \subsection{Stakeholders}
 
