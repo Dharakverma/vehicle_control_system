@@ -111,7 +111,25 @@ Microcontroller: STM32F767ZI
 No specific plans for a CI tool
 
 \section{Coding Standard}
+Github will be the version control application we will be using. This will allow us 
+to continuously iterate, track changes, and store code. 
+
+For this project, the majority of the codebase will exist as simulink (.slx) files. 
+Due to this, automating testing through Github Actions will be tough, since much of 
+the code will be unrecognisable to Github. To combat this issue, we will be enforcing 
+a PR approval process that will require a minimum of two members to approve. We will 
+be following a 'Scouts Honor' code where each potential PR approver must pull the 
+branch to their local machine and validate the relevant changes before approving the 
+merge. The individual requesting the code review cannot approve their own request.
+
+As always, proper software development practices must be implemented at all points 
+in the software development cycle. This means that code must be properly commented, 
+naming conventions should make sense, code is easily readable, and proper function 
+use should be implemented to ensure unit testing can be completed easily.
 
 \section{Project Scheduling}
+Major milestones will align with those given in the course outline. Project-specific 
+milestones, such as control system features, testing or integration, will be considered 
+for each subsystem, and tasks will be assigned during weekly meetings.
 
 \end{document}
