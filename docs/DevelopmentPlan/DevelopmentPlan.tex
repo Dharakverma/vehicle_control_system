@@ -89,37 +89,29 @@ upcoming week (and potentially beyond), Tasks will then be assigned to the
 appropriate team member. Any issues or questions regarding the tasks can be 
 added as a comment to the specific task on the board.
 
-\begin{itemize}
-	\item How will you be using git, including branches, pull request, etc.?
-	\item How will you be managing issues, including template issues, issue
-	classificaiton, etc.?
-\end{itemize}
-
 \section{Proof of Concept Demonstration Plan}
 
-What is the main risk, or risks, for the success of your project?  What will you
-demonstrate during your proof of concept demonstration to convince yourself that
-you will be able to overcome this risk?
+For proof of concept, we’ll be able to demonstrate our vehicle control 
+system through simulating inputs to our overarching state machine, which in 
+turn will control our smaller subsystems and output the current vehicle state. 
+All of this can be visualised through Matlab, using simulation tools already 
+present. There are tools to help test and validate our control system, both 
+through virtual models, which will be used to test our code early and often, 
+and physical models, which we will use at the end to show off our final 
+control system.
+
 
 \section{Technology}
-
-\begin{itemize}
-\item Specific programming language
-\item Specific linter tool (if appropriate)
-\item Specific unit testing framework
-\item Investigation of code coverage measuring tools
-\item Specific plans for Continuous Integration (CI), or an explanation that CI
-  is not being done
-\item Specific performance measuring tools (like Valgrind), if
-  appropriate
-\item Libraries you will likely be using?
-\item Tools you will likely be using?
-\end{itemize}
+Embedded System: C
+Simulation: Simulink
+Control Model: Simulink
+Battery Management System Hardware: Orion BMS
+Motor Kit: AMK Motor Kit
+Microcontroller: STM32F767ZI
+No specific plans for a CI tool
 
 \section{Coding Standard}
 
 \section{Project Scheduling}
-
-\wss{How will the project be scheduled?}
 
 \end{document}
