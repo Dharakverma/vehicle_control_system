@@ -9,5 +9,6 @@ classdef MI_STATUSES < Simulink.IntEnumType
         ERR_STARTUP(6)
         ERR_RUNNING(7)
         ERR_SHUTDOWN(8)
+        OFF(9)
     end
 end
