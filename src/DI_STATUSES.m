@@ -6,7 +6,8 @@ classdef DI_STATUSES < Simulink.IntEnumType
         STARTUP(3)
         DRV_START_REQ(4)
         RUNNING(5)
-        ERR_STARTUP(6)
-        ERR_RUNNING(7)
+        ERROR(6)
+        ERR_STARTUP(7)
+        ERR_RUNNING(8)
     end
 end
