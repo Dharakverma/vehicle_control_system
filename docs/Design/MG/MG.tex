@@ -46,8 +46,7 @@
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
 \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
-Date 1 & 1.0 & Notes\\
-Date 2 & 1.1 & Notes\\
+January 18, 2023 & 1.0 & First Version\\
 \bottomrule
 \end{tabularx}
 
@@ -74,7 +73,6 @@ This section records information for easy reference.
   SRS & Software Requirements Specification\\
   \progname & Explanation of program name\\
   UC & Unlikely Change \\
-  \wss{etc.} & \wss{...}\\
   \bottomrule
 \end{tabular}\\
 
@@ -125,7 +123,7 @@ potential readers of this document are as follows:
   important for a maintainer to update the relevant sections of the document
   after changes have been made.
 \item Designers: Once the module guide has been written, it can be used to
-  check for consistency, feasibility and flexibility. Designers can verify the
+  check for consistency, feasibility, and flexibility. Designers can verify the
   system in various ways, such as consistency among modules, feasibility of the
   decomposition, and flexibility of the design.
 \end{itemize}
@@ -153,16 +151,16 @@ unlikely changes are listed in Section \ref{SecUchange}.
 Anticipated changes are the source of the information that is to be hidden
 inside the modules. Ideally, changing one of the anticipated changes will only
 require changing the one module that hides the associated decision. The approach
-adapted here is called design for
-change.
+adopted here is called design for change. The only anticipated change would be changes to the 
+torque vectoring and traction control logic, that lives inside of the vehicle dynamics block.
 
+%gotta fix 
 \begin{description}
-\item[\refstepcounter{acnum} \actheacnum \label{acHardware}:] The specific
-  hardware on which the software is running.
-\item[\refstepcounter{acnum} \actheacnum \label{acInput}:] The format of the
-  initial input data.
-\item ...
+\item[\refstepcounter{acnum} \actheacnum \label{acTV}:] Torque Vectoring
+\item[\refstepcounter{acnum} \actheacnum \label{acTC}:] Traction Control
 \end{description}
+
+%assuming every input is correct
 
 \subsection{Unlikely Changes} \label{SecUchange}
 
@@ -175,8 +173,9 @@ decisions will be changed.
 
 \begin{description}
 \item[\refstepcounter{ucnum} \uctheucnum \label{ucIO}:] Input/Output devices
-  (Input: File and/or Keyboard, Output: File, Memory, and/or Screen).
-\item ...
+  (Input: Pedals, steering sensors, motor and contactor feedback, Output: Speaker, motor commands).
+\item[\refstepcounter{ucnum} \uctheucnum \label{ucFSAE}:] FSAE rules and regulations
+\item[\refstepcounter{ucnum} \uctheucnum \label{ucModules}:] Module heirarchy
 \end{description}
 
 \section{Module Hierarchy} \label{SecMH}
@@ -187,8 +186,12 @@ below, which are leaves in the hierarchy tree, are the modules that will
 actually be implemented.
 
 \begin{description}
-\item [\refstepcounter{mnum} \mthemnum \label{mHH}:] Hardware-Hiding Module
-\item ...
+\item [\refstepcounter{mnum} \mthemnum \label{mDI}:] Driver Interface
+\item [\refstepcounter{mnum} \mthemnum \label{mVD}:] Vehicle Dynamics
+\item [\refstepcounter{mnum} \mthemnum \label{mMI}:] Motor Interface
+\item [\refstepcounter{mnum} \mthemnum \label{mBM}:] Battery Monitor
+\item [\refstepcounter{mnum} \mthemnum \label{mG}:] Governor
+\item [\refstepcounter{mnum} \mthemnum \label{mPlant}:] Plant Model
 \end{description}
 
 
@@ -199,22 +202,17 @@ actually be implemented.
 \textbf{Level 1} & \textbf{Level 2}\\
 \midrule
 
-{Hardware-Hiding Module} & ~ \\
+{Hardware-Hiding Module} & Plant Model \\
 \midrule
 
-\multirow{7}{0.3\textwidth}{Behaviour-Hiding Module} & ?\\
-& ?\\
-& ?\\
-& ?\\
-& ?\\
-& ?\\
-& ?\\ 
-& ?\\
+\multirow{7}{0.3\textwidth}{Behaviour-Hiding Module} & Driver Interface\\
+& Vehicle Dynamics\\
+& Motor Interface\\
+& Battery Monitor\\
 \midrule
 
-\multirow{3}{0.3\textwidth}{Software Decision Module} & {?}\\
-& ?\\
-& ?\\
+\multirow{3}{0.3\textwidth}{Software Decision Module} & \\
+& Governor\\
 \bottomrule
 
 \end{tabular}
@@ -226,16 +224,7 @@ actually be implemented.
 
 The design of the system is intended to satisfy the requirements developed in
 the SRS. In this stage, the system is decomposed into modules. The connection
-between requirements and modules is listed in Table \ref{TblRT}.
-
-\wss{The intention of this section is to document decisions that are made
-  ``between'' the requirements and the design.  To satisfy some requirements,
-  design decisions need to be made.  Rather than make these decisions implicit,
-  they are explicitly recorded here.  For instance, if a program has security
-  requirements, a specific design decision may be made to satisfy those
-  requirements with a password.  In scientific examples, the choice of algorithm
-could potentially go here, if that is a decision that is exposed by the
-interface.}
+between requirements and modules is listed in Table~\ref{TblRT}.
 
 \section{Module Decomposition} \label{SecMD}
 
@@ -253,7 +242,7 @@ Only the leaf modules in the hierarchy have to be implemented. If a dash
 (\emph{--}) is shown, this means that the module is not a leaf and will not have
 to be implemented.
 
-\subsection{Hardware Hiding Modules (\mref{mHH})}
+\subsection{Hardware Hiding Modules}
 
 \begin{description}
 \item[Secrets:]The data structure and algorithm used to implement the virtual
@@ -264,46 +253,57 @@ to be implemented.
 \item[Implemented By:] OS
 \end{description}
 
+\subsubsection{Plant Module (\mref{mPlant})}
+\begin{description}
+\item[Secrets:]Drive input signals, HV and LV contactors.
+\item[Services:]This module simulates the physical input signals to the various other models in order to test various functionality and edge cases.
+\item[Implemented By:] driver\_plant.slx
+\item[Type of Module:] Simulink Model
+\end{description}
+
 \subsection{Behaviour-Hiding Module}
 
+\subsubsection{Driver Interface Module (\mref{mDI})}
 \begin{description}
-\item[Secrets:]The contents of the required behaviours.
-\item[Services:]Includes programs that provide externally visible behaviour of
-  the system as specified in the software requirements specification (SRS)
-  documents. This module serves as a communication layer between the
-  hardware-hiding module and the software decision module. The programs in this
-  module will need to change if there are changes in the SRS.
-\item[Implemented By:] --
+\item[Secrets:]
+\item[Services:]Pedal mapping
+\item[Implemented By:] driver\_interface\_lib.slx
+\item[Type of Module:] Simulink Model
 \end{description}
 
-\subsubsection{Input Format Module (\mref{mInput})}
-
+\subsubsection{Vehicle Dynamics Module (\mref{mVD})}
 \begin{description}
-\item[Secrets:]The format and structure of the input data.
+\item[Secrets:]The format and structure of the input data. ****check this
 \item[Services:]Converts the input data into the data structure used by the
   input parameters module.
-\item[Implemented By:] [Your Program Name Here]
-\item[Type of Module:] [Record, Library, Abstract Object, or Abstract Data Type]
-  [Information to include for leaf modules in the decomposition by secrets tree.]
+\item[Implemented By:] vehicle\_dynamics\_lib.slx
+\item[Type of Module:] Simulink Model
 \end{description}
 
-\subsubsection{Etc.}
-
-
-\subsection{Software Decision Module}
-
+\subsubsection{Motor Interface Module (\mref{mMI})}
 \begin{description}
-\item[Secrets:] The design decision based on mathematical theorems, physical
-  facts, or programming considerations. The secrets of this module are
-  \emph{not} described in the SRS.
-\item[Services:] Includes data structure and algorithms used in the system that
-  do not provide direct interaction with the user. 
-  % Changes in these modules are more likely to be motivated by a desire to
-  % improve performance than by externally imposed changes.
-\item[Implemented By:] --
+\item[Secrets:]
+\item[Services:]Controls the left and right motors
+  input parameters module.
+\item[Implemented By:] motor\_interface\_lib.slx
+\item[Type of Module:] Simulink Model
 \end{description}
 
-\subsubsection{Etc.}
+\subsubsection{Battery Monitor Module (\mref{mBM})}
+\begin{description}
+\item[Secrets:]The format and structure of the input data. ****check this
+\item[Services:]Takes in contactor statuses for the battery and outputs battery status to the governor.
+\item[Implemented By:] battery\_monitor\_lib.slx
+\item[Type of Module:] Simulink Model
+\end{description}
+
+\subsubsection{Governor Module (\mref{mG})}
+\begin{description}
+\item[Secrets:]The format and structure of the input data. ****check this
+\item[Services:]Monitors inputs from Driver Interface, Vehicle Dynamics, Motor Interface and Battery Monitor modules and sends commands to these modules based on the current state of the vehicle.
+\item[Implemented By:] governor\_lib.slx
+\item[Type of Module:] Simulink Model
+\end{description}
 
 \section{Traceability Matrix} \label{SecTM}
 
@@ -314,49 +314,23 @@ requirements and between the modules and the anticipated changes.
 % like fref
 \begin{table}[H]
 \centering
-\begin{tabular}{p{0.2\textwidth} p{0.6\textwidth}}
+\begin{tabular}{p{0.6\textwidth} p{0.2\textwidth}}
 \toprule
 \textbf{Req.} & \textbf{Modules}\\
 \midrule
-R1 & \mref{mHH}, \mref{mInput}, \mref{mParams}, \mref{mControl}\\
-R2 & \mref{mInput}, \mref{mParams}\\
-R3 & \mref{mVerify}\\
-R4 & \mref{mOutput}, \mref{mControl}\\
-R5 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}, \mref{mSeqDS}, \mref{mSolver}, \mref{mPlot}\\
-R6 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}, \mref{mSeqDS}, \mref{mSolver}, \mref{mPlot}\\
-R7 & \mref{mOutput}, \mref{mEnergy}, \mref{mControl}, \mref{mSeqDS}, \mref{mPlot}\\
-R8 & \mref{mOutput}, \mref{mEnergy}, \mref{mControl}, \mref{mSeqDS}, \mref{mPlot}\\
-R9 & \mref{mVerifyOut}\\
-R10 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}\\
-R11 & \mref{mOutput}, \mref{mODEs}, \mref{mEnergy}, \mref{mControl}\\
+NFR1, NFR2, NFR3, NFR4, NFR5, NFR6 & \mref{mDI}\\
+\midrule
+VDR1, VDR2, NFR1, NFR2, NFR3, NFR5, NFR6 & \mref{mVD}\\
+\midrule
+TMR1, TMR2, TMR2, TMR4, TMR5, TMR6, TMR7, NFR1, NFR2, NFR3, NFR4, NFR5, NFR6 & \mref{mMI}\\
+\midrule
+AMR1, AMR2, AMR3, AMR4, AMR5, AMR6, AMR7, AMR8, AMR9, NFR1, NFR2, NFR3, NFR5, NFR6 & \mref{mBM} \\
+\midrule
+MSR1, MSR2, MSR3, MSR4, MSR5, MSR6, MSR7, MSR8, MSR9, NFR1, NFR2, NFR3, NFR5, NFR6 & \mref{mG} \\
 \bottomrule
 \end{tabular}
 \caption{Trace Between Requirements and Modules}
 \label{TblRT}
-\end{table}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{p{0.2\textwidth} p{0.6\textwidth}}
-\toprule
-\textbf{AC} & \textbf{Modules}\\
-\midrule
-\acref{acHardware} & \mref{mHH}\\
-\acref{acInput} & \mref{mInput}\\
-\acref{acParams} & \mref{mParams}\\
-\acref{acVerify} & \mref{mVerify}\\
-\acref{acOutput} & \mref{mOutput}\\
-\acref{acVerifyOut} & \mref{mVerifyOut}\\
-\acref{acODEs} & \mref{mODEs}\\
-\acref{acEnergy} & \mref{mEnergy}\\
-\acref{acControl} & \mref{mControl}\\
-\acref{acSeqDS} & \mref{mSeqDS}\\
-\acref{acSolver} & \mref{mSolver}\\
-\acref{acPlot} & \mref{mPlot}\\
-\bottomrule
-\end{tabular}
-\caption{Trace Between Anticipated Changes and Modules}
-\label{TblACT}
 \end{table}
 
 \section{Use Hierarchy Between Modules} \label{SecUse}
@@ -374,7 +348,7 @@ because they use modules from the lower levels.
 
 \begin{figure}[H]
 \centering
-%\includegraphics[width=0.7\textwidth]{UsesHierarchy.png}
+\includegraphics[width=\textwidth]{heirarchy.png}
 \caption{Use hierarchy among modules}
 \label{FigUH}
 \end{figure}
@@ -385,14 +359,5 @@ because they use modules from the lower levels.
 \bibliography{../../../refs/References}
 
 \newpage{}
-\section*{Appendix --- Reflection}
-
-The information in this section will be used to evaluate the team members on the
-graduate attribute of Lifelong Learning.  Please answer the following questions:
-
-\begin{enumerate}
-  \item 
-  \item 
-\end{enumerate}
 
 \end{document}

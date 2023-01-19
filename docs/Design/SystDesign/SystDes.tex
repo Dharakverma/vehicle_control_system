@@ -3,9 +3,12 @@
 \usepackage{fullpage}
 \usepackage[round]{natbib}
 \usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{colortbl}
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{graphicx}
+\graphicspath{ {./images/} }
 \usepackage{float}
 \usepackage{hyperref}
 \hypersetup{
@@ -31,6 +34,10 @@
 \newcommand{\mthemnum}{M\themnum}
 \newcommand{\mref}[1]{M\ref{#1}}
 
+\newcommand{\tableVspace}{5mm}
+\newcommand{\ReqColA}{0.13\textwidth}
+\newcommand{\ReqColB}{0.82\textwidth}
+
 \begin{document}
 
 \title{System Design for \progname{}} 
@@ -41,23 +48,22 @@
 
 \pagenumbering{roman}
 
-\section{Revision History}
+\section*{Revision History}
 
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
 \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
-Date 1 & 1.0 & Notes\\
-Date 2 & 1.1 & Notes\\
+January 18, 2023 & 1.0 & First Version\\
 \bottomrule
 \end{tabularx}
 
 \newpage
 
-\section{Reference Material}
+\section*{Reference Material}
 
 This section records information for easy reference.
 
-\subsection{Abbreviations and Acronyms}
+\subsection*{Abbreviations and Acronyms}
 
 \renewcommand{\arraystretch}{1.2}
 \begin{tabular}{l l} 
@@ -84,107 +90,440 @@ This section records information for easy reference.
 \pagenumbering{arabic}
 
 \section{Introduction}
+\wss{Include references to your other documentation}\\
 
-\wss{Include references to your other documentation}
+The goal of this capstone project is to simulate the vehicle controls system for the McMaster Formula Electric Vehicle, as stated in the \href{https://github.com/Dharakverma/vehicle_control_system/blob/main/docs/ProblemStatementAndGoals/ProblemStatement.pdf}{Problem Statement and Goals} documentation. While taking into account the  \href{https://github.com/Dharakverma/vehicle_control_system/blob/main/docs/SRS/SRS.pdf}{Requirements}, \href{https://github.com/Dharakverma/vehicle_control_system/blob/main/docs/HazardAnalysis/HazardAnalysis.pdf}{Hazard Analysis}, and \href{https://github.com/Dharakverma/vehicle_control_system/blob/main/docs/VnVPlan/VnV_Plan.pdf}{Verification and Validation Plan}, readers of this document and members of the McMaster Formula Electric team should be able to:
 
 \section{Purpose}
 
 \wss{Purpose of your design documentation}
-
 \wss{Point to your other design documents}
 
-\section{Scope}
+The purpose of this System Design document is to demonstrate the components of the system and will serve as a guide for the implementation of the control system, which was originally established in the problem statement and goals document.  The document examines the software requirements stated in the SRS document and builds on them through further explaining how the user interacts with the system Furthermore the hardware, electrical, and communication components of the system will be examined in related to how they interact with each other and the software. This document should also contextualize the tests which will be conducted as specified in the Vnv documents.
 
+The following objectives will be achieved:
+\begin{itemize}
+    \item Allow quarter scale Formula 1 style electric car to operate in basic driving conditions
+    \item The control system will need to be compartmentalized into subsystems: Driver Interface, Governor, Vehicle Dynamics, Motor Interface, and Battery Monitor
+    \item Development will be conducted in a model-based environment via MATLAB/Simulink
+    \item All subsystems will need to be tested separately and in conjunction as specified in the VnV Plan and Report
+\end{itemize}
+
+\section{Scope}
 \wss{Include a figure that show the System Context (showing the boundary between
 your system and the environment around it.)}
+\begin{figure}[h!]
+    \includegraphics[width=\textwidth]{system_and_env.JPG}
+    \centering
+    \caption{System context figure, depicting the boundary between the control system and external environment}
+\end{figure}
 
 \section{Project Overview}
 
 \subsection{Normal Behaviour}
 
+Normal behaviour for this system constitutes the vehicle's hardware and embedded systems functioning as intended, 
+with the vehicle in regular driving scenarios (parked, idling, driving). Mechanical vehicle hardware (chassis, 
+brakes, suspension, etc.) have not failed or yielded. Electrical vehicle hardware (sensors, PCBs, etc.) is powered 
+and is producing necessary outputs. Vehicle controllers (computers) are operating and running their software. 
+Communication systems (CAN & SPI busses, etc.) are transmitting data between the controllers as expected. 
+
+
 \subsection{Undesired Event Handling}
 
-\wss{How you will approach undesired events}
-
-\subsection{Component Diagram}
+Undesired events constitute a violation of the aforementioned normal operating conditions (Section 4.1). Our system is capable of monitoring the vehicle's systems only through the analog and digital signals it receives. Therefore, we are able to monitor the voltage of driver input sensors (pedals, steering) for unexpected/error behavior, as well as monitoring if CAN communication from the BMS or AMK motor kit is lost. If such errors are detected, the control system will respond accordingly, which in most cases means coasting down (enforcing 0 acceleration from the motors) and allowing the driver to use the mechanical brakes and steering to bring the vehicle to a stop. If an undesired event happens that the control system has no visibility of (eg. mechanical failure, or more likely an electrical failure outside of our input sensors), the vehicle relies on fail-safe procedures for which there are extensive guidelines from SAE, who verify these systems through comprehensive vehicle inspections at competition events.
 
 \subsection{Connection Between Requirements and Design} \label{SecConnection}
 
-\wss{The intention of this section is to document decisions that are made
-  ``between'' the requirements and the design.  To satisfy some requirements,
-  design decisions need to be made.  Rather than make these decisions implicit,
-  they are explicitly recorded here.  For instance, if a program has security
-  requirements, a specific design decision may be made to satisfy those
-  requirements with a password.}
+The following requirements from the Software Requirements Specification were the most influential on system design:
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+NFR10 & If the vehicle is in motion while an unsafe condition occurs, the control system shall zero the motor torque commands until a system reset.\\
+\hline
+Rationale & The vehicle's "safe state" should be to allow the driver to coast or brake to a safe location, without issuing any positive/negative torque command from the motors.\\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+NFR5 & The control system modules shall incorporate modularization principles, including encapsulation and information hiding.\\
+\hline
+Rationale & Having modules and sub-modules interact through well-defined inputs/outputs, while hiding their implementation, facilitates maintainability by allowing module implementation updates to not drive downstream changes.  \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}
+\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+MSR4 & Mode Selection shall adhere to Activation Sequence rule FSAE EV.10.4.2 ["Traction System Active"] 
+\begin{itemize}
+    \item Definition – High Voltage is present outside of the Accumulator Container
+    \item Tractive System Active must not be possible until both: (1) GLV System is Energized; (2) Shutdown Circuit is Closed
+\end{itemize} \\
+\hline
+Rationale & Competition rule\\
+\hline
+Likelihood of Change & Very unlikely - Competition rule \\
+\hline
+\end{tabular} 
+
+\vspace{\tableVspace}
+\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+MSR5 & Mode Selection shall adhere to Activation Sequence rule FSAE EV.10.4.3 ["Ready to Drive"] 
+\begin{itemize}
+    \item Definition – the Motor(s) will respond to the input of the APPS
+    \item Ready to Drive must not be possible until: (1) Tractive System Active; (2) The brake pedal is pressed and held to engage the mechanical brakes; (3) The driver performs a manual action to initiate Ready to Drive
+    such as pressing a specific button in the cockpit
+\end{itemize} \\
+\hline
+Rationale & Competition rule\\
+\hline
+Likelihood of Change & Very unlikely - Competition rule \\
+\hline
+\end{tabular}
+
+\vspace{2mm}
+\noindent
+(Note: mention of "Mode Selection" no longer applies - this module has since been renamed to "Governor")
+
+These four requirements heavily inform the software system's architecture (see Section 3) of several "Layer 1" modules that encapsulate a specific subsystem's functions, with a supervisory controller at "Layer 2", the Governor, that monitors the state of each subsystem, and issues commands if state changes are needed. For example, MSR4 (determining "Tractive System Active") is implemented by the Motor Interface and Battery Monitor reporting to the Governor that they are both are in a running state. MSR5 (determining "Ready To Drive") is implemented when Tractive System Active is valid, as well as the Driver Interface reporting to the Governor that the driver has requested the motors to respond. In cases such as NFR10, an "unsafe condition" would be detected by a Layer 1 system (eg. a motor error), report this to the Governor, and the Governor can command all the subsystems accordingly.
+
 
 \section{System Variables}
 
-\wss{Include this section for Mechatronics projects}
-
 \subsection{Monitored Variables}
 
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+Variable & ptCAN\_AMKActualValues1\_Right \\
+\hline
+Description & First CAN message received from the right-rear motor. See Figures 2 \& 3, an excerpt from the AMK motor documentation, for a breakdown of the signals within this message.\\
+\hline
+Units & N/A - see Figures 2 \& 3 \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+Variable & ptCAN\_AMKActualValues2\_Right\\
+\hline
+Description & Second CAN message received from the right-rear motor. See Figure 4, an excerpt from the AMK motor documentation, for a breakdown of the signals within this message.\\
+\hline
+Units & N/A - see Figure 4 \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+Variable & ptCAN\_AMKActualValues1\_Left\\
+\hline
+Description & First CAN message received from the left-rear motor. See Figures 2 \& 3, an excerpt from the AMK motor documentation, for a breakdown of the signals within this message.\\
+\hline
+Units & N/A - see Figures 2 \& 3 \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+Variable & ptCAN\_AMKActualValues2\_Left\\
+\hline
+Description & Second CAN message received from the left-rear motor. See Figure 4, an excerpt from the AMK motor documentation, for a breakdown of the signals within this message.\\
+\hline
+Units & N/A - see Figure 4 \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+Variable & DI\_V\_SteeringAngle \\
+\hline
+Description & Reading from the steering angle sensor (potentiometer).\\
+\hline
+Units & Voltage, remapped through a ADC\\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+Variable & DI\_V\_BrakePedalPos \\
+\hline
+Description & Reading from the brake pedal sensor (potentiometer).\\
+\hline
+Units & Voltage, remapped through a ADC\\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+Variable & DI\_b\_DriverButton \\
+\hline
+Description & Reading from the driver 'vehicle start' button (digital IO pin input).\\
+\hline
+Units & Boolean\\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+Variable & DI\_V\_AccelPedalPos1 \\
+\hline
+Description & Reading from the first accelerator pedal sensor (potentiometer).\\
+\hline
+Units & Voltage, remapped through a ADC\\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+Variable & DI\_V\_AccelPedalPos2 \\
+\hline
+Description & Reading from the second accelerator pedal sensor (potentiometer).\\
+\hline
+Units & Voltage, remapped through a ADC\\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+Variable & BM\_b\_prechrgContactorSts \\
+\hline
+Description & Received from the BMS through CAN. Indicates if the HV battery's precharge contactor is closed (true).\\
+\hline
+Units & Boolean\\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+Variable & BM\_b\_HVposContactorSts \\
+\hline
+Description & Received from the BMS through CAN. Indicates if the HV battery's positive contactor is closed (true).\\
+\hline
+Units & Boolean\\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+Variable & BM\_b\_HVnegContactorSts \\
+\hline
+Description & Received from the BMS through CAN. Indicates if the HV battery's negative contactor is closed (true).\\
+\hline
+Units & Boolean\\
+\hline
+\end{tabular}
+
+\begin{figure}[h!]
+    \includegraphics[width=\textwidth]{AMKactualVals1.JPG}
+    \centering
+    \caption{AMK\_ActualValues1 signals}
+\end{figure}
+
+\begin{figure}[h!]
+    \includegraphics[width=\textwidth]{AMKstatus.JPG}
+    \centering
+    \caption{Data bits within AMK\_Status}
+\end{figure}
+
+\begin{figure}[h!]
+    \includegraphics[width=\textwidth]{AMKactualVals2.JPG}
+    \centering
+    \caption{AMK\_ActualValues2 signals}
+\end{figure}
+
+\newpage
 \subsection{Controlled Variables}
 
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+Variable & ptCAN\_AMK\_Setpoints1\_Right\\
+\hline
+Description & CAN message sent to the right-rear motor. See Figures 5 \& 6, an excerpt from the AMK motor documentation, for a breakdown of the signals within this message.\\
+\hline
+Units & N/A - see Figures 5 \& 6\\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+Variable & ptCAN\_AMK\_Setpoints1\_Left\\
+\hline
+Description & CAN message sent to the left-rear motor. See Figures 5 \& 6, an excerpt from the AMK motor documentation, for a breakdown of the signals within this message.\\
+\hline
+Units & N/A - see Figures 5 \& 6\\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+Variable & DI\_b\_driverSpeaker\\
+\hline
+Description & For controlling the driver speaker, sent to a digital output pin. \\
+\hline
+Units & Boolean\\
+\hline
+\end{tabular}
+
+\begin{figure}[h!]
+    \includegraphics[width=\textwidth]{AMKsetpoints1.JPG}
+    \centering
+    \caption{AMK\_Setpoints1 signals}
+\end{figure}
+
+\begin{figure}[h!]
+    \includegraphics[width=\textwidth]{AMKcontrol.JPG}
+    \centering
+    \caption{AMK\_Control bits}
+\end{figure}
+
+\newpage
 \subsection{Constants Variables}
+
+The current scope of the control system does not require the use of constants.
 
 \section{User Interfaces}
 
-\wss{Design of user interface for software and hardware.  Attach an appendix if
-needed. Drawings, Sketches, Figma}
+Although we do not have a traditional software-based user interface, our control system still has connections and reliance upon the user, or in this case, the driver, through physical buttons located on the vehicle's steering wheel and inside the driver's cockpit.
+
+
+% \begin{figure}[h!]
+%     \includegraphics[width=\textwidth]{block logic.png}
+%     \centering
+%     \caption{Simulink Vehicle Control System Logic}
+% \end{figure}
+
+% As shown in the architecture outlined in Figure 1, the Simulink Model follows the same architecture design.
+% This makes it as easy as possible for members of the team to interface with inputs and outputs of each block, and correctly
+% map each value in the embedded system. The main advantage the user gains by using simulink, is the ability to quickly make code changes
+% and validate on the fly. This feature becomes super important during competition, when timing is of the essence to get scored correctly.
+% Simulink's has different types of scopes available in its toolkit, as well as a Simulation Data Inspection Tool, which works similar
+% to a trace, that allows a user to view the change of inputs and outputs overtime before pushing code to the board, allowing for
+% confident validation of any changes made.
+
+\begin{figure}[h!]
+    \includegraphics[width=\textwidth]{capstone_user_interface.png}
+    \centering
+    \caption{MAC FE LV Test Bench}
+\end{figure}
+
+Figure 3 was taken from the MAC FE LV test bench, on which the relevant hardware that will interface our control system with the user can be found. The first major component is the accumulator indicator, used to notify the user that the accumulator, or battery pack, is functional and ready for use. This signal comes from a vehicle controller and is based on the status of the high-voltage contactors provided by the Orion BMS. The second major component is the BMS fault LED, used to notify the user of any mismatched or out-of-order contactor sequencing faults caught by the BMS. We then have our physical push buttons labeled 'vehicle start' and 'LV enable'. Both switches act as blocks to prevent the vehicle from starting without user input, and are/will be accounted for in the control system accordingly. The last piece of hardware that could be considered a user interface is the ready-to-drive speaker, pictured at the bottom of figure 2 in red. This speaker is used to notify the driver and everyone in their surrounding that the vehicle is now indeed ready-to-drive and should be treated with caution.
+Other user interface elements not shown in Figure 3 include the vehicle's accelerator pedal, brake pedal, and steering wheel. These inputs to our control system are the primary interface with the user while the vehicle is in motion.
 
 \section{Design of Hardware}
-
-\wss{Most relevant for mechatronics projects}
-\wss{Show what will be acquired}
-\wss{Show what will be built, with detail on fabrication and materials}
-\wss{Include appendices as appropriate, possibly with sketches, drawings, CAD, etc}
+The design of physical, non-electrical, hardware is not relevant to this particular capstone project. This is in part due to the hardware, such as the steering, chassis, and all ECU and accumulator enclosures already having been designed and fabricated by members of MAC FE.
 
 \section{Design of Electrical Components}
+In terms of electrical components, we will be acquiring hardware from MAC FE as a vast majority of the hardware being controlled by our system is far outside our project budget and heavily specialized for the vehicle's application. Below is a summary of the hardware being acquired.
 
-\wss{Most relevant for mechatronics projects}
-\wss{Show what will be acquired}
-\wss{Show what will be built, with detail on fabrication and materials}
-\wss{Include appendices as appropriate, possibly with sketches, drawings,
-circuit diagrams, etc}
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB} |}
+\hline
+\rowcolor[gray]{0.9}
+Hardware & Usage\\
+\hline
+Orion BMS & Off-the-shelf battery management system used to control contactor states, operational cell temperatures, and report data back to the control system via CAN.\\
+\hline
+AMK Motor Kit & Off-the-shelf dual motor kit, single source of propulsion for the vehicle, completely controlled by the control system.\\
+\hline
+Vehicle Start Push Button & Button to signal to the control system that the user is ready to initiate the startup sequence.\\
+\hline
+LV Enable Push Button & Button to enable the LV hardware on the vehicle, including the Front Controller ECU which hosts the control system.\\
+\hline
+Ready-to-Drive Speaker & Off-the-shelf speaker used to notify the user and surrounding personnel that all critical vehicle systems are functional.\\
+\hline
+\end{tabular}
 
 \section{Design of Communication Protocols}
+The design of the relevant communication protocols inside the control system are completely reliant upon the MAC FE embedded system and the AMK motor kit being able to receive, decode, and utilize the data sent over. Inside the system, we have defined multiple structures to consolidate and tag data appropriately and subsequently send it over to the embedded system for consumption. All the structures were defined as enumerations that contain model-specific state information, commands, and error codes. These enumerations are then auto-generated into C structures using the built-in autogeneration toolbox in Simulink. With these C structures, the MAC FE embedded system, which is solely written in C, can easily use the data being computed inside the control system in order to make sub-system-specific decisions.
 
-\wss{If appropriate}
+Apart from the enumerations, we also utilize CAN communication to interface with the AMK motor kit. The MAC FE embedded system is still acting as a middleman in order to transmit the CAN frames, receive them, and then push them back into the control system, but our systems Motor Interface module prepares the CAN frame for the embedded system such that the embedded system does not need to decode or refactor the frame, but can simply transmit the output from the control system directly to the AMK motor controllers. These frames are using the CAN 2.0b standard and the data within each frame is formatted such that the motor controllers are able to decode them appropriately, shown as an example in Figure 4.
+
 
 \section{Timeline}
 
-\wss{Schedule of tasks and who is responsible}
-
-% \bibliographystyle {plainnat}
-% \bibliography{../../../refs/References}
+Current Tasks which have been planned for implementation on hardware are as follows:
+\begin{itemize}
+    \item Simscape / vehicle dynamics modelling for plant simulation (Laura, Jason): Due January 22
+    \item CAN interfacing (Abhishek): Due January 27
+    \item Potentiometer interfacing (Derek, Abhishek): Due February 3
+    \item Simulation test case design (Laura, Jason): Due February 3
+\end{itemize}
 
 \newpage{}
 
 \appendix
 
-\section{Interface}
+% \section{Interface}
 
-\wss{Include additional information related to the appearance of, and
-interaction with, the user interface}
+% \wss{Include additional information related to the appearance of, and
+% interaction with, the user interface}
 
-\section{Mechanical Hardware}
+% \section{Mechanical Hardware}
 
-\section{Electrical Components}
+% \section{Electrical Components}
 
-\section{Communication Protocols}
+% \section{Communication Protocols}
 
 \section{Reflection}
 
-The information in this section will be used to evaluate the team members on the
-graduate attribute of Problem Analysis and Design.  Please answer the following questions:
+% The information in this section will be used to evaluate the team members on the
+% graduate attribute of Problem Analysis and Design.  Please answer the following questions:
 
-\begin{enumerate}
-  \item What are the limitations of your solution?  Put another way, given
-  unlimited resources, what could you do to make the project better? (LO\_ProbSolutions)
-  \item Give a brief overview of other design solutions you considered.  What
-  are the benefits and tradeoffs of those other designs compared with the chosen
-  design?  From all the potential options, why did you select documented design?
-  (LO\_Explores)
-\end{enumerate}
+%\begin{enumerate}
+  % \item What are the limitations of your solution?  Put another way, given
+  % unlimited resources, what could you do to make the project better? (LO\_ProbSolutions)
+  
+  %\item 
+  Given greater resources in the form of time, know-how and budget, we would be able vastly improve the testing loop in our control system's development. This could include purchasing industry-level vehicle modelling/simulation tools that would allow us to simulate transient signals such as component temperature, vehicle dynamics (speed, acceleration), and motor and battery characteristics. Such tools are much more accurate for simulation and logic testing when compared to our manually-created plant models, which are based on rudimentary physics and hard-coded timeseries signals. We would also be able to build an automated test infrastructure that runs through a series of predefined simulation scenarios and verifies that a change has not broken the logic of a required feature. In an even more ideal scenario, we would have access to the hardware-complete vehicle to perform in-vehicle testing and data acquisition, to tweak and calibrate driver input handling and motor commands as to improve driving characteristics.
+
+  % \item Give a brief overview of other design solutions you considered.  What
+  % are the benefits and tradeoffs of those other designs compared with the chosen
+  % design?  From all the potential options, why did you select documented design?
+  % (LO\_Explores)
+
+    %\item 
+When we first approached the task of creating a control system for the McMaster FSAE car, the initial thought was to develop and launch it in C code. Through our preliminary information gathering and consideration of the system's complexity, we quickly realized that this would be a major hindrance to implementation within the given time frame. We quickly moved to the framework of Simulink development, which is almost ubiquitous in automotive software development or prototyping. The rapid development workflow (design, implement, simulate, fix), auto-generated code and data visualization tools would allow for greater progress to be made by the end of the project. 
+Beyond this decision, from the start we knew the system would require a series of layered modules, each controlling various subsystems of the car, and communicating their states and signals to each other as needed. This software architecture was primarily driven by industry experience among team members, and moreover this reflects and integrates well with the planned hardware systems/layout that the vehicle will be built with.
+  
+%\end{enumerate}
 
 \end{document}
