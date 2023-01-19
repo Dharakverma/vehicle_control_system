@@ -31,6 +31,10 @@ urlcolor=cyan          % color of external links
 
 \usepackage{array}
 
+\newcommand{\tableVspace}{5mm}
+\newcommand{\ReqColA}{0.13\textwidth}
+\newcommand{\ReqColB}{0.82\textwidth}
+
 \externaldocument{../../SRS/SRS}
 
 \input{../../Comments}
@@ -48,23 +52,20 @@ urlcolor=cyan          % color of external links
 
 \pagenumbering{roman}
 
-\section{Revision History}
+\section*{Revision History}
 
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
 \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
-Date 1 & 1.0 & Notes\\
-Date 2 & 1.1 & Notes\\
+January 18, 2023 & 1.0 & First Version\\
 \bottomrule
 \end{tabularx}
 
 ~\newpage
 
-\section{Symbols, Abbreviations and Acronyms}
+\section*{Symbols, Abbreviations and Acronyms}
 
-See SRS Documentation at \wss{give url}
-
-\wss{Also add any additional symbols, abbreviations or acronyms}
+See SRS Documentation \href{https://github.com/Dharakverma/vehicle_control_system/blob/main/docs/SRS/SRS.pdf}{here}.
 
 \newpage
 
@@ -76,49 +77,17 @@ See SRS Documentation at \wss{give url}
 
 \section{Introduction}
 
-The following document details the Module Interface Specifications for
-\wss{Fill in your project name and description}
+The following document details the Module Interface Specifications for the vehicle controls system for the McMaster Formula Electric Vehicle.
 
 Complementary documents include the System Requirement Specifications
 and Module Guide.  The full documentation and implementation can be
-found at \url{...}.  \wss{provide the url for your repo}
+found \href{https://github.com/Dharakverma/vehicle_control_system}{here}.
 
 \section{Notation}
 
-\wss{You should describe your notation.  You can use what is below as
-  a starting point.}
+The structure of this MIS has been reformatted to reflect the model-based design principles that our system is based on, in the form of Simulink. This environment is composed of blocks (black-box modules), each responsible for managing a specific subsystem/function, and input and output signals between other blocks. This inherently frames the software system as modularized, with defined IO interactions and hidden implementations.
 
-The structure of the MIS for modules comes from \citet{HoffmanAndStrooper1995},
-with the addition that template modules have been adapted from
-\cite{GhezziEtAl2003}.  The mathematical notation comes from Chapter 3 of
-\citet{HoffmanAndStrooper1995}.  For instance, the symbol := is used for a
-multiple assignment statement and conditional rules follow the form $(c_1
-\Rightarrow r_1 | c_2 \Rightarrow r_2 | ... | c_n \Rightarrow r_n )$.
-
-The following table summarizes the primitive data types used by \progname. 
-
-\begin{center}
-\renewcommand{\arraystretch}{1.2}
-\noindent 
-\begin{tabular}{l l p{7.5cm}} 
-\toprule 
-\textbf{Data Type} & \textbf{Notation} & \textbf{Description}\\ 
-\midrule
-character & char & a single symbol or digit\\
-integer & $\mathbb{Z}$ & a number without a fractional component in (-$\infty$, $\infty$) \\
-natural number & $\mathbb{N}$ & a number without a fractional component in [1, $\infty$) \\
-real & $\mathbb{R}$ & any number in (-$\infty$, $\infty$)\\
-\bottomrule
-\end{tabular} 
-\end{center}
-
-\noindent
-The specification of \progname \ uses some derived data types: sequences, strings, and
-tuples. Sequences are lists filled with elements of the same data type. Strings
-are sequences of characters. Tuples contain a list of values, potentially of
-different types. In addition, \progname \ uses functions, which
-are defined by the data types of their inputs and outputs. Local functions are
-described by giving their type signature followed by their specification.
+Each MIS details these critical elements - inputs, outputs, and states \& transitions if a state manager is present in the module. An MIS has been defined for all 5 of our main subsystems.
 
 \section{Module Decomposition}
 
@@ -131,21 +100,18 @@ The following table is taken directly from the Module Guide document for this pr
 \textbf{Level 1} & \textbf{Level 2}\\
 \midrule
 
-{Hardware-Hiding} & ~ \\
+{Hardware-Hiding} & Plant Model \\
 \midrule
 
-\multirow{7}{0.3\textwidth}{Behaviour-Hiding} & Input Parameters\\
-& Output Format\\
-& Output Verification\\
-& Temperature ODEs\\
-& Energy Equations\\ 
-& Control Module\\
-& Specification Parameters Module\\
+\multirow{7}{0.3\textwidth}{Behaviour-Hiding} & \\
+& Driver Interface\\
+& Vehicle Dynamics\\
+& Motor Interface\\
+& Battery Monitor\\
 \midrule
 
-\multirow{3}{0.3\textwidth}{Software Decision} & {Sequence Data Structure}\\
-& ODE Solver\\
-& Plotting\\
+\multirow{3}{0.3\textwidth}{Software Decision} & \\
+& Governor\\
 \bottomrule
 
 \end{tabular}
@@ -154,78 +120,1091 @@ The following table is taken directly from the Module Guide document for this pr
 \end{table}
 
 \newpage
-~\newpage
+% ~\newpage
 
-\section{MIS of \wss{Module Name}} \label{Module} \wss{Use labels for
-  cross-referencing}
+\section{Governor MIS} \label{mGov} 
+The previously referenced as MSR (Mode-selection-ring) in our SRS, is now named Governor. The Governor is responsible for controlling and monitoring the Battery Monitor, Vehicle Dynamics, Motor Interface, and Driver Interface subsystems. Governor uses the state of each module to determine an overall vehicle status, and coordinate state changes between these modules.
 
-\wss{You can reference SRS labels, such as R\ref{R_Inputs}.}
-
-\wss{It is also possible to use \LaTeX for hypperlinks to external documents.}
-
-\subsection{Module}
-
-\wss{Short name for the module}
+\subsection{Alias Name}
+GOV
 
 \subsection{Uses}
+Driver Interface, Motor Interface, Battery Monitor, Vehicle Dynamics
 
+\subsection{Variables}
 
-\subsection{Syntax}
+\subsubsection{Inputs}
 
-\subsubsection{Exported Constants}
-
-\subsubsection{Exported Access Programs}
-
-\begin{center}
-\begin{tabular}{p{2cm} p{4cm} p{4cm} p{2cm}}
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
 \hline
-\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\rowcolor[gray]{0.9}
 \hline
-\wss{accessProg} & - & - & - \\
+Variable & GOV\_e\_bmSts \\
+\hline
+Description & Battery monitoring module statuses.\\
+\hline
+Data Type & Enumeration\\
+\hline
+Scope & Local \\
+\hline
+Origin & System \\
 \hline
 \end{tabular}
-\end{center}
 
-\subsection{Semantics}
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & GOV\_e\_diSts \\
+\hline
+Description & Driver interface module statuses.\\
+\hline
+Data Type & Enumeration\\
+\hline
+Scope & Local \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
 
-\subsubsection{State Variables}
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & GOV\_e\_miSts \\
+\hline
+Description & Motor interface module statuses.\\
+\hline
+Data Type & Enumeration\\
+\hline
+Scope & Local \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
 
-\wss{Not all modules will have state variables.  State variables give the module
-  a memory.}
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & GOV\_e\_vdSts \\
+\hline
+Description & Vehicle dynamics module statuses.\\
+\hline
+Data Type & Enumeration\\
+\hline
+Scope & Local \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
 
-\subsubsection{Environment Variables}
+\subsubsection{Outputs}
 
-\wss{This section is not necessary for all modules.  Its purpose is to capture
-  when the module has external interaction with the environment, such as for a
-  device driver, screen interface, keyboard, file, etc.}
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & GOV\_e\_bmCmd \\
+\hline
+Description & State transition command issued to the battery monitoring module.\\
+\hline
+Data Type & Enumeration\\
+\hline
+Scope & Global \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
 
-\subsubsection{Assumptions}
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & GOV\_e\_miCmd \\
+\hline
+Description & State transition command issued to the motor interface module.\\
+\hline
+Data Type & Enumeration\\
+\hline
+Scope & Global \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
 
-\wss{Try to minimize assumptions and anticipate programmer errors via
-  exceptions, but for practical purposes assumptions are sometimes appropriate.}
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & GOV\_e\_diCmd \\
+\hline
+Description & State transition command issued to the driver interface module.\\
+\hline
+Data Type & Enumeration\\
+\hline
+Scope & Global \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
 
-\subsubsection{Access Routine Semantics}
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & GOV\_e\_vdCmd \\
+\hline
+Description & State transition command issued to the vehicle dynamics module.\\
+\hline
+Data Type & Enumeration\\
+\hline
+Scope & Global \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
 
-\noindent \wss{accessProg}():
-\begin{itemize}
-\item transition: \wss{if appropriate} 
-\item output: \wss{if appropriate} 
-\item exception: \wss{if appropriate} 
-\end{itemize}
+\subsection{States and Transitions}
+% 0.13\textwidth
 
-\wss{A module without environment variables or state variables is unlikely to
-  have a state transition.  In this case a state transition can only occur if
-  the module is changing the state of another module.}
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{0.22\textwidth} | p{0.08\textwidth} | p{0.4\textwidth} | p{0.2\textwidth} | }
+\hline
+\rowcolor[gray]{0.9}
+\hline
+State & Level &Transition Condition & Destination State \\
+\hline
+Initialize outputs & N/A & True (exit after 1 execution) & HV startup\\
+\hline
+STARTUP & Parent & BM reports startup error & HV startup error\\
+\hline
+- & - & MI reports error AND motor start count $\geq$ 5 & Motor faulted\\
+\hline
+- & - & MI reports error AND motor start count $<$ 5 & Error reset\\
+\hline
+- & - & DI reports error & Driver Interface error\\
+\hline
+STARTUP $\gg$ HV startup & Child & BM reports running & Command motor startup\\
+\hline
+STARTUP $\gg$ Command motor startup & Child & MI reports running AND DI reports driver requested start & Send readyToDrive\\
+\hline
+STARTUP $\gg$ Send readyToDrive & Child & DI reports running & RUNNING\\
+\hline
+RUNNING & N/A & BM reports running error & HV run error\\
+\hline
+- & - & MI reports error & Motor run error\\
+\hline
+STARTUP ERROR & Parent & None & None\\
+\hline
+STARTUP ERROR $\gg$ HV startup error & Child & None & None\\
+\hline
+STARTUP ERROR $\gg$ Error reset & Child & MI reports off & STARTUP\\
+\hline
+STARTUP ERROR $\gg$ Motor faulted & Child & None & None\\
+\hline
+RUNNING ERROR & Parent & None & None\\
+\hline
+RUNNING ERROR $\gg$ HV run error & Child & None & None\\
+\hline
+RUNNING ERROR $\gg$ Motor run error & Child & None & None\\
+\hline
 
-\wss{Modules rarely have both a transition and an output.  In most cases you
-  will have one or the other.}
+\end{tabular}
 
-\subsubsection{Local Functions}
 
-\wss{As appropriate} \wss{These functions are for the purpose of specification.
-  They are not necessarily something that is going to be implemented
-  explicitly.  Even if they are implemented, they are not exported; they only
-  have local scope.}
+\section{Driver Interface MIS} \label{mDI} 
+
+The Driver Interface module reads environment signals from the driver (eg. pedal, steering input), and processes these signals for use elsewhere in the control system.
+
+\subsection{Alias Name}
+DI
+
+\subsection{Uses}
+Governor
+
+\subsection{Variables}
+
+\subsubsection{Inputs}
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & GOV\_e\_diCmd \\
+\hline
+Description & Driver interface module command from Governor. \\
+\hline
+Data Type & Enumeration \\
+\hline
+Scope & Local \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & DI\_V\_BrakePedalPos \\
+\hline
+Description & Brake pedal position as a percentage.\\
+\hline
+Data Type & Voltage\\
+\hline
+Scope & Local \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & DI\_b\_DriverButton \\
+\hline
+Description & Driver button.\\
+\hline
+Data Type & Boolean\\
+\hline
+Scope & Local \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & DI\_V\_AccelPedalPos1 \\
+\hline
+Description & Accelerator pedal position sensor 1 as a percentage.\\
+\hline
+Data Type & Voltage\\
+\hline
+Scope & Local \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & DI\_V\_AccelPedalPos2\\
+\hline
+Description & Accelerator pedal position sensor 2 as a percentage.\\
+\hline
+Data Type & Voltage\\
+\hline
+Scope & Local \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & DI\_V\_SteeringAngle \\
+\hline
+Description & Steering angle.\\
+\hline
+Data Type & Voltage\\
+\hline
+Scope & Local \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
+
+\subsubsection{Outputs}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & GOV\_e\_diSts \\
+\hline
+Description & Driver interface status output to Governor.\\
+\hline
+Data Type & Enumeration\\
+\hline
+Scope & Global \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & GOV\_e\_TorqueRequest \\
+\hline
+Description & Torque request output to vehicle dynamics module.\\
+\hline
+Data Type & Single\\
+\hline
+Scope & Global \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{0.2\textwidth} | p{0.1\textwidth} | p{0.4\textwidth} | p{0.2\textwidth} | }
+\hline
+\rowcolor[gray]{0.9}
+\hline
+State & Level & Transition Condition & Destination State \\
+\hline
+Initialization & Parent & N/A & Running\\
+\hline
+Running & Parent & N/A & Driver interface error or vehicle coasting\\
+\hline
+Waiting for driver & Child & Initialization complete & Driver requested start\\
+\hline
+Driver requested start & Child & Drive button pushed & Ready to drive\\
+\hline
+Ready to drive & Child & Governor commanded state transition & Speaker on\\
+\hline
+Speaker on & Stepchild & N/A & Speaker off\\
+\hline
+Speaker off & Stepchild & 2 second timer & N/A\\
+\hline
+Driver interface error & Parent & Drive interface error detected & N/A\\
+\hline
+Vehicle coasting & Parent & Governor commanded state transition & N/A\\
+\hline
+\end{tabular}
+
+\section{Vehicle Dynamics MIS} \label{mVD} 
+
+The Vehicle Dynamics module is the medium between the Driver Interface, and the Motor interface. It takes processed inputs from both the Driver Interface and AMK motors, and uses them to calculate appropriate motor torque requests based on factors like available electrical power and component temperatures.
+
+\subsection{Alias Name}
+VD
+
+\subsection{Uses}
+Driver Interface, Governor
+
+\subsection{Variables}
+
+\subsubsection{Inputs}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & DI\_p\_driverTorqueRequest \\
+\hline
+Description & Filtered potentiometer value from the driver accelerator pedal.\\
+\hline
+Data Type & Single\\
+\hline
+Scope & Global \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & DI\_p\_brakePedalPosition \\
+\hline
+Description & Filtered potentiometer value from the driver brake pedal. \\
+\hline
+Data Type & Single\\
+\hline
+Scope & Global \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & DI\_p\_steeringAngle \\
+\hline
+Description & Filtered steering angle sensor input value. \\
+\hline
+Data Type & Single\\
+\hline
+Scope & Global \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & ptCAN\_AMK\_ActualValues1\_Left \\
+\hline
+Description & Incoming CAN messages from the left-side inverter. \\
+\hline
+Data Type & Enumeration\\
+\hline
+Scope & Local \\
+\hline
+Origin & Environment \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & ptCAN\_AMK\_ActualValues1\_Right \\
+\hline
+Description & Incoming CAN messages from the right-side inverter.\\
+\hline
+Data Type & Enumeration\\
+\hline
+Scope & Local \\
+\hline
+Origin & Environment \\
+\hline
+\end{tabular}
+
+\subsubsection{Outputs}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & VD\_n\_RightMotorSpeedRequest \\
+\hline
+Description & Right Motor Speed Request in RPM. \\
+\hline
+Data Type & Single\\
+\hline
+Scope & Global \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & VD\_T\_RightMotorTorqueLimitPositive \\
+\hline
+Description & Positive Right Motor Torque Limit in Nm. \\
+\hline
+Data Type & Single\\
+\hline
+Scope & Global \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & VD\_T\_RightMotorTorqueLimitNegative \\
+\hline
+Description & Negative Right Motor Torque Limit in Nm. \\
+\hline
+Data Type & Single\\
+\hline
+Scope & Global \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & VD\_n\_LeftMotorSpeedRequest \\
+\hline
+Description & Left Motor Speed Request in RPM.\\
+\hline
+Data Type & Single\\
+\hline
+Scope & Global \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & VD\_T\_LeftMotorTorqueLimitPositive \\
+\hline
+Description & Positive Left Motor Torque Limit in Nm.\\
+\hline
+Data Type & Single\\
+\hline
+Scope & Global\\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & VD\_T\_LeftMotorTorqueLimitNegative \\
+\hline
+Description & Negative Left Motor Torque Limit in Nm.\\
+\hline
+Data Type & Single\\
+\hline
+Scope & Global \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
+
+\subsection{States and Transitions}
+None
+
+% \subsubsection{Environment Variables}
+% DI\_p\_driverTorqueRequest \\
+% DI\_p\_brakePedalPosition \\
+% DI\_p\_SteeringAngle \\
+% ptCAN\_AMK\_ActualValues1\_Left \\
+% ptCAN\_AMK\_ActualValues1\_Right \\
+
+% \subsection{Local Functions}
+% \subsubsection{LEFT\_LIMIT}
+% \begin{description}
+% \item[Description:] Computes the motor's available torque based on its available power
+% \item[Inputs:] AMK\_ActualVelocity\_Left, AMK\_MagnetizingCurrent\_Left, BM\_V\_DCbusVoltage, I\_MaxBatteryCurrent, I\_MaxMotorCurrent, I\_MaxMotorTorque
+% \item[Outputs:] T\_LeftTorqLimit
+% \end{description}
+
+% \subsubsection{RIGHT\_LIMIT}
+% \begin{description}
+% \item[Description:] Computes the motor's available torque based on its available power
+% \item[Inputs:] AMK\_ActualVelocity\_Right, AMK\_MagnetizingCurrent\_Right, BM\_V\_DCbusVoltage, I\_MaxBatteryCurrent, I\_MaxMotorCurrent, I\_MaxMotorTorque
+% \item[Outputs:] T\_RightTorqLimit
+% \end{description}
+
+\section{Motor Interface MIS} \label{mMI}
+
+The Motor Interface monitors and controls the state of each of the 2 AMK motors. As the name implies, it serves as the interface between higher level system modules and the motors.
+
+\subsection{Alias Name}
+MI
+
+\subsection{Uses}
+Governor, Vehicle Dynamics
+
+\subsection{Variables}
+
+\subsubsection{Inputs}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & GOV\_e\_miCmd \\
+\hline
+Description & State transition command issued to the motor interface module.\\
+\hline
+Data Type & Enumeration\\
+\hline
+Scope & Global \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & ptCAN\_AMK\_ActualValues1\_Right \\
+\hline
+Description & Incoming CAN messages from the right-side inverter.\\
+\hline
+Data Type & Enumeration\\
+\hline
+Scope & Local \\
+\hline
+Origin & Environment \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & ptCAN\_AMK\_ActualValues2\_Right \\  
+\hline
+Description & Incoming CAN messages from the right-side inverter.\\
+\hline
+Data Type & Enumeration\\
+\hline
+Scope & Local \\
+\hline
+Origin & Environment \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & VD\_n\_RightMotorSpeedRequest \\
+\hline
+Description & Right Motor Speed Request in RPM. \\
+\hline
+Data Type & Single\\
+\hline
+Scope & Global \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & VD\_T\_RightMotorTorqueLimitPositive \\
+\hline
+Description & Positive Left Motor Torque Limit in Nm.\\
+\hline
+Data Type & Single\\
+\hline
+Scope & Global\\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & VD\_T\_RightMotorTorqueLimitNegative \\
+\hline
+Description & Negative Right Motor Torque Limit in Nm.\\
+\hline
+Data Type & Single\\
+\hline
+Scope & Global\\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & ptCAN\_AMK\_ActualValues1\_Left \\
+\hline
+Description & Incoming CAN messages from the left-side inverter.\\
+\hline
+Data Type & Enumeration\\
+\hline
+Scope & Local \\
+\hline
+Origin & Environment \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & ptCAN\_AMK\_ActualValues2\_Left \\
+\hline
+Description & Incoming CAN messages from the left-side inverter.\\
+\hline
+Data Type & Enumeration\\
+\hline
+Scope & Local \\
+\hline
+Origin & Environment \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & VD\_n\_LeftMotorSpeedRequest \\
+\hline
+Description & Left Motor Speed Request in RPM. \\
+\hline
+Data Type & Single\\
+\hline
+Scope & Global \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & VD\_T\_LeftMotorTorqueLimitPositive \\
+\hline
+Description & Positive Left Motor Torque Limit in Nm.\\
+\hline
+Data Type & Single\\
+\hline
+Scope & Global\\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & VD\_T\_LeftMotorTorqueLimitNegative \\
+\hline
+Description & Negative Left Motor Torque Limit in Nm.\\
+\hline
+Data Type & Single\\
+\hline
+Scope & Global\\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
+
+
+\subsubsection{Outputs}
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & GOV\_e\_vdSts \\
+\hline
+Description & Internal status of the vehicle dynamics module, for use by Governor.\\
+\hline
+Data Type & Enumeration\\
+\hline
+Scope & Global \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & VD\_T\_RmotorTorqueReq \\
+\hline
+Description & Right wheel torque request computed from the Vehicle Dynamics module and sent to Motor Interface module\\
+\hline
+Data Type & Single\\
+\hline
+Scope & Global \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
+
+\subsection{States and Transitions}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{0.2\textwidth} | p{0.1\textwidth} | p{0.4\textwidth} | p{0.2\textwidth} | }
+\hline
+\rowcolor[gray]{0.9}
+\hline
+State & Level & Transition Condition & Destination State \\
+\hline
+Motor off/Waiting for Governor & Parent & N/A & AMK Startup\\
+\hline
+AMK Startup & Parent & N/A & AMK running or error state\\
+\hline
+Waiting for system ready & Child & Governor issued state command & Toggle AMK DC on or error state\\
+\hline
+Toggle AMK DC on & Child & AMK system ready & Enforce set points zero\\
+\hline
+Enforce set points zero & Child & AMK DC on and AMK quit DC on  & Command AMK on\\
+\hline
+Command AMK on & Child & After 1 second & Error or AMK running\\
+\hline
+AMK running & Parent & AMK inverter on and AMK quit inverter on & AMK shutdown or error state\\
+\hline
+AMK shutdown & Parent & Governor commanded state transition & Motor off/Waiting for governor\\
+\hline
+Enforce set points zero & Child & Governor commanded state transition & Command off\\
+\hline
+Command off & Child & AMK inverter off & Toggle DC off\\
+\hline
+Toggle DC off & Child & AMK inverter quit off & Motor off waiting for governor\\
+\hline
+AMK error detected & Parent & Error detected (in any child or parent) & AMK error reset\\
+\hline
+AMK error reset & Parent & Governor issued state command & Motor off wait for governor\\
+\hline
+Enforce set points zero & Child & Governor issued state command & Toggle AMK enable\\
+\hline
+Toggle AMK enable & Child & AMK inverter off & Send reset\\
+\hline
+Send reset & Child & 500ms timer & Toggle reset\\
+\hline
+Toggle reset & Child & 500ms timer & AMK system ready\\
+\hline
+\end{tabular}
+
+% \subsection{Local Functions}
+% \subsubsection{LEFT\_MOTOR}
+% \begin{description}
+% \item[Description:] Computes the motor's available torque based on its available power
+% \item[Inputs:] AMK\_ActualVelocity\_Left, AMK\_MagnetizingCurrent\_Left, BM\_V\_DCbusVoltage, I\_MaxBatteryCurrent, I\_MaxMotorCurrent, I\_MaxMotorTorque
+% \item[Outputs:] T\_LeftTorqLimit
+% \end{description}
+
+% \subsubsection{RIGHT\_MOTOR}
+% \begin{description}
+% \item[Description:] Computes the motor's available torque based on its available power
+% \item[Inputs:] AMK\_ActualVelocity\_Right, AMK\_MagnetizingCurrent\_Right, BM\_V\_DCbusVoltage, I\_MaxBatteryCurrent, I\_MaxMotorCurrent, I\_MaxMotorTorque
+% \item[Outputs:] T\_RightTorqLimit
+% \end{description}
+
+% \subsubsection{Environment Variables}
+% GOV\_e\_miCmd \\
+% ptCAN\_AMK\_ActualValues1\_Right \\
+% ptCAN\_AMK\_ActualValues2\_Right \\
+% VD\_n\_RightMotorSpeedRequest \\
+% VD\_T\_RightMotorTorqueLimitPositive \\
+% VD\_T\_RightMotorTorqueLimitNegitive \\
+% ptCAN\_AMK\_ActualValues1\_Left \\
+% ptCAN\_AMK\_ActualValues2\_Left \\
+% VD\_n\_LeftMotorSpeedRequest \\
+% VD\_T\_LeftMotorTorqueLimitPositive \\
+% VD\_T\_LeftMotorTorqueLimitNegitive \\
+\newpage
+
+\section{Battery Monitor MIS} \label{mBM} 
+
+The Battery Monitor reads the battery's three high voltage contactor states (closed or open), and determines \& reports if the battery is in an operating state.
+
+\subsection{Alias Name}
+BM
+
+\subsection{Uses}
+None
+
+\subsection{Variables}
+
+\subsubsection{Inputs}
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & GOV\_e\_bmCmd \\
+\hline
+Description & Battery monitoring module command.\\
+\hline
+Data Type & Enumeration\\
+\hline
+Scope & Local \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & BM\_b\_prechrgContactorSts \\
+\hline
+Description & Battery monitoring precharge contactor status.\\
+\hline
+Data Type & Boolean\\
+\hline
+Scope & Local \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & BM\_b\_HVposContactorSts \\
+\hline
+Description & Battery monitoring high voltage positive contactor status.\\
+\hline
+Data Type & Boolean\\
+\hline
+Scope & Local \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & BM\_b\_HVnegContactorSts \\
+\hline
+Description & Battery monitoring high voltage negative contactor status.\\
+\hline
+Data Type & Boolean\\
+\hline
+Scope & Local \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
+
+\subsubsection{Outputs}
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{\ReqColA} | p{\ReqColB}|}
+\hline
+\rowcolor[gray]{0.9}
+\hline
+Variable & GOV\_e\_bmCSts \\
+\hline
+Description & Battery monitoring module status.\\
+\hline
+Data Type & Enumeration\\
+\hline
+Scope & Local \\
+\hline
+Origin & System \\
+\hline
+\end{tabular}
+
+\subsection{States and Transitions}
+% \begin{enumerate}
+%   \setcounter{enumi}{-1}
+%   \item UNKNOWN
+%   \item INIT
+%   \item IDLE
+%   \item STARTUP
+%   \item INIT\_PRECHARGE
+%   \item PRECHARGE
+%   \item RUNNING
+%   \item ERR\_PRECHARGE\_CLOSED
+%   \item ERR\_STARTUP
+%   \item ERR\_INIT\_PRECHARGE
+%   \item ERR\_PRECHARGE
+%   \item ERR\_RUNNING
+%   \item ERR\_ALL\_CLOSED
+%   \item ERR\_HV\_POSITIVE
+% \end{enumerate}
+
+\vspace{\tableVspace}\noindent
+\begin{tabular}{| p{0.22\textwidth} | p{0.08\textwidth} | p{0.4\textwidth} | p{0.2\textwidth} | }
+\hline
+\rowcolor[gray]{0.9}
+\hline
+State & Level &Transition Condition & Destination State \\
+\hline
+Initial State & Parent & All BM contactors open & Startup State 1\\
+\hline
+Initial State & Parent & precharge contactor closed, HV negative and HV positive contactors open & Error Precharge Closed State\\
+\hline
+Initial State & Parent & All BM contactors closed & Error All Closed State\\
+\hline
+Initial State & Parent & HV positive contactor closed, precharge and HV negative contactors open & Error HV Positive\\
+\hline
+Initial State & Parent & precharge and HV negative contactors closed, HV positive contactor open & Precharge State\\
+\hline
+Initial State & Parent & HV negative and positive contactors closed, precharge contactor open & Running State\\
+\hline
+Startup State 2 & Parent & HV negative contactor closed, precharge and HV positive contactors open & Startup State\\
+\hline
+Startup State & Parent & Precharge and HV negative contactor closed, HV positive contactor open & Initialize Precharge State\\
+\hline
+Startup State & Parent & After 1 second & Error Startup State\\
+\hline
+Initialize Precharge State & Parent & All contactors closed & Precharge state\\
+\hline
+Initialize Precharge State & Parent & After 1 second & Error Initialize Precharge state\\
+\hline
+Precharge State & Parent & HV positive and negative contactors closed, precharge contactor open & Running State\\
+\hline
+Precharge State & Parent & After 1 second & Error Precharge State\\
+\hline
+Running State & Parent & HV positive contactor closed, precharge and HV negative contactor closed & Running state\\
+\hline
+Running State & Parent & After 1 second & Error Running State\\
+\hline
+
+\end{tabular}
+        
+
+% \subsubsection{Environment Variables}
+% Gov\_e\_bmCmd \\
+% BM\_b\_prechrgContactorSts \\
+% BM\_b\_prechrgContactorSts \\
+% BM\_b\_HVposContactorSts \\
+% BM\_b\_HVnegContactorSts \\
+
+% \subsection{Local Functions}
 
 \newpage
 
@@ -234,8 +1213,8 @@ The following table is taken directly from the Module Guide document for this pr
 
 \newpage
 
-\section{Appendix} \label{Appendix}
+% \section{Appendix} \label{Appendix}
 
-\wss{Extra information if required}
+% \wss{Extra information if required}
 
 \end{document}
