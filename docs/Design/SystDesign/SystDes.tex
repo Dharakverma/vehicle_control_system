@@ -1,0 +1,190 @@
+\documentclass[12pt, titlepage]{article}
+
+\usepackage{fullpage}
+\usepackage[round]{natbib}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=blue,
+    filecolor=black,
+    linkcolor=red,
+    urlcolor=blue
+}
+
+\input{../../Comments}
+\input{../../Common}
+
+\newcounter{acnum}
+\newcommand{\actheacnum}{AC\theacnum}
+\newcommand{\acref}[1]{AC\ref{#1}}
+
+\newcounter{ucnum}
+\newcommand{\uctheucnum}{UC\theucnum}
+\newcommand{\uref}[1]{UC\ref{#1}}
+
+\newcounter{mnum}
+\newcommand{\mthemnum}{M\themnum}
+\newcommand{\mref}[1]{M\ref{#1}}
+
+\begin{document}
+
+\title{System Design for \progname{}} 
+\author{\authname}
+\date{\today}
+
+\maketitle
+
+\pagenumbering{roman}
+
+\section{Revision History}
+
+\begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
+\toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
+\midrule
+Date 1 & 1.0 & Notes\\
+Date 2 & 1.1 & Notes\\
+\bottomrule
+\end{tabularx}
+
+\newpage
+
+\section{Reference Material}
+
+This section records information for easy reference.
+
+\subsection{Abbreviations and Acronyms}
+
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{l l} 
+  \toprule		
+  \textbf{symbol} & \textbf{description}\\
+  \midrule 
+  \progname & Explanation of program name\\
+  \wss{...} & \wss{...}\\
+  \bottomrule
+\end{tabular}\\
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\listoftables
+
+\listoffigures
+
+\newpage
+
+\pagenumbering{arabic}
+
+\section{Introduction}
+
+\wss{Include references to your other documentation}
+
+\section{Purpose}
+
+\wss{Purpose of your design documentation}
+
+\wss{Point to your other design documents}
+
+\section{Scope}
+
+\wss{Include a figure that show the System Context (showing the boundary between
+your system and the environment around it.)}
+
+\section{Project Overview}
+
+\subsection{Normal Behaviour}
+
+\subsection{Undesired Event Handling}
+
+\wss{How you will approach undesired events}
+
+\subsection{Component Diagram}
+
+\subsection{Connection Between Requirements and Design} \label{SecConnection}
+
+\wss{The intention of this section is to document decisions that are made
+  ``between'' the requirements and the design.  To satisfy some requirements,
+  design decisions need to be made.  Rather than make these decisions implicit,
+  they are explicitly recorded here.  For instance, if a program has security
+  requirements, a specific design decision may be made to satisfy those
+  requirements with a password.}
+
+\section{System Variables}
+
+\wss{Include this section for Mechatronics projects}
+
+\subsection{Monitored Variables}
+
+\subsection{Controlled Variables}
+
+\subsection{Constants Variables}
+
+\section{User Interfaces}
+
+\wss{Design of user interface for software and hardware.  Attach an appendix if
+needed. Drawings, Sketches, Figma}
+
+\section{Design of Hardware}
+
+\wss{Most relevant for mechatronics projects}
+\wss{Show what will be acquired}
+\wss{Show what will be built, with detail on fabrication and materials}
+\wss{Include appendices as appropriate, possibly with sketches, drawings, CAD, etc}
+
+\section{Design of Electrical Components}
+
+\wss{Most relevant for mechatronics projects}
+\wss{Show what will be acquired}
+\wss{Show what will be built, with detail on fabrication and materials}
+\wss{Include appendices as appropriate, possibly with sketches, drawings,
+circuit diagrams, etc}
+
+\section{Design of Communication Protocols}
+
+\wss{If appropriate}
+
+\section{Timeline}
+
+\wss{Schedule of tasks and who is responsible}
+
+% \bibliographystyle {plainnat}
+% \bibliography{../../../refs/References}
+
+\newpage{}
+
+\appendix
+
+\section{Interface}
+
+\wss{Include additional information related to the appearance of, and
+interaction with, the user interface}
+
+\section{Mechanical Hardware}
+
+\section{Electrical Components}
+
+\section{Communication Protocols}
+
+\section{Reflection}
+
+The information in this section will be used to evaluate the team members on the
+graduate attribute of Problem Analysis and Design.  Please answer the following questions:
+
+\begin{enumerate}
+  \item What are the limitations of your solution?  Put another way, given
+  unlimited resources, what could you do to make the project better? (LO\_ProbSolutions)
+  \item Give a brief overview of other design solutions you considered.  What
+  are the benefits and tradeoffs of those other designs compared with the chosen
+  design?  From all the potential options, why did you select documented design?
+  (LO\_Explores)
+\end{enumerate}
+
+\end{document}
