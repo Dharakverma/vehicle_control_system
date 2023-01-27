@@ -1,0 +1,7 @@
+../Core/Inc/canal.c:57:19:setInstance	24	static
+../Core/Inc/canal.c:79:13:setDefaults	16	static
+../Core/Inc/canal.c:89:19:setTimingParams	24	static
+../Core/Inc/canal.c:111:19:setMode	16	static
+../Core/Inc/canal.c:119:19:setFilters	64	static
+../Core/Inc/canal.c:148:12:Can_Init	24	static
+../Core/Inc/canal.c:174:12:Can_Receive_IT	64	static

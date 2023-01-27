@@ -1,0 +1,11 @@
+../Core/Inc/CANreceive.h:44:10:reverseBits	32	static
+../Core/Inc/CANreceive.h:104:6:IncomingCANMessageHandler	152	static
+../Core/Src/main.c:126:5:main	32	static
+../Core/Src/main.c:260:6:SystemClock_Config	88	static
+../Core/Src/main.c:302:13:MX_CAN1_Init	8	static
+../Core/Src/main.c:339:13:MX_SPI4_Init	8	static
+../Core/Src/main.c:379:13:MX_USART3_UART_Init	8	static
+../Core/Src/main.c:414:13:MX_GPIO_Init	48	static
+../Core/Src/main.c:447:13:CAN_Config	48	static
+../Core/Src/main.c:474:6:HAL_CAN_RxFifo0MsgPendingCallback	16	static
+../Core/Src/main.c:492:6:Error_Handler	4	static,ignoring_inline_asm

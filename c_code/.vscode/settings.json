@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "spi.h": "c",
+        "main.h": "c",
+        "stm32f7xx_hal.h": "c",
+        "stm32f7xx_hal_conf.h": "c"
+    }
+}

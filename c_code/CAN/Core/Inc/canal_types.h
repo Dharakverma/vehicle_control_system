@@ -1,0 +1,85 @@
+/*
+ * canal_types.h
+ *
+ *  Created on: Jan 22, 2023
+ *      Author: Samuel Parent
+ *
+ *                    ..::^~~~!!~~~^^:..
+ *                .:^!7??JJJJJJJJJJJJ??7!~:.
+ *              :~7?JJJ???????????????JJJJ??!^.
+ *           .^7?JJJ???JJJJJJ??????????????JJJ?~:
+ *          ^7JJ???????777777???JJJJJJJ???????JJ?~.
+ *        .!JJ???????????7!~^::::^~!!7??JJ???????J7:
+ *       :7JJJ??????????JJJJ??7~:    ..:~7?J??????J?^
+ *      .7J???????????????????JJ?!.       :7J??????J?^
+ *     .~J??????????????????JJJJ?!.       .7J???????J7.
+ *     :?J?????????????JJJJ??7!^.      .:~???????????J~
+ *     ^???????????JJJ??7~^:..      .:~7?JJ??????????J!.
+ *     ^????????JJ?7~^:.        .:~!?JJJ?????????????J!.
+ *     ^????????!^.          .:~7?JJJ????????????????J!.
+ *     .7J????!.            :7?JJ?????????????????????^
+ *      ~JJ?J7.             ~JJJJ???????????????????J!.
+ *      .!J???^.            .^!7?JJJJJJ????????????J7:
+ *       .!?J??7^.              .:^~!7???JJJJJ????J7:
+ *        .^?JJJJ?7~.                 ..:^~~!7????!.
+ *          .!?JJJJ?:                         ..::
+ *            :~??!:
+ *              ..
+ */
+
+#ifndef INC_CANAL_TYPES_H_
+#define INC_CANAL_TYPES_H_
+
+typedef enum {
+	// CAN_UNKNOWN_RETURN indicates an initialized return code
+	CAN_UNKOWN_RETURN,
+	// CAN_OK indicates a successful function call
+	CAN_OK,
+	// CAN_INVALID_INSTANCE indicates that the provided canNum is not supported
+	CAN_UNSUPPORTED_INSTANCE,
+	// CAN_UNSUPPORTED_BAUD indicates that the provided baud rate is not supported
+	CAN_UNSUPPORTED_BAUD,
+	// CAN_UNSUPPORTED_MODE indicates that the selected can mode is not supported
+	// by the canal library
+	CAN_UNSUPPORTED_MODE,
+	// CAN_UNSUPPORTED_PCLK1_FREQ indicates that the Peripheral Clock 1 frequency
+	// is not in the CAN_BITRATE_TABLE (this is the clock that supports CAN 1-3).
+	// To add entries for the a given freq go to: http://www.bittiming.can-wiki.info/
+	CAN_UNSUPPORTED_PCLK1_FREQ,
+	// CAN_UNSUPPORTED_RX_MESSAGE indicates that the message is not classified for
+	// receiving
+	CAN_UNSUPPORTED_RX_MESSAGE,
+	// CAN_UNSUPPORTED_TX_MESSAGE indicates that the message is not classified for
+	// transmission
+	CAN_UNSUPPORTED_TX_MESSAGE,
+	// CAN_UNKOWN_IDE indicated that the RxHeader contains an unknown IDE
+	CAN_UNKOWN_IDE,
+
+	// CAN_INIT_FAILED indicates that the HAL_CAN_Init function returned !OK
+	CAN_INIT_FAILED,
+	// CAN_START_FAILED indicates that the HAL_CAN_Start function returned !OK
+	CAN_START_FAILED,
+	// CAN_CONFIG_FILTER_FAILED indicates the the HAL_CAN_ConfigFilter returned !OK
+	CAN_CONFIG_FILTER_FAILED,
+	// CAN_GET_RXMESSAGE_FAILED indicates the HAL_CAN_GetRxMessage returned !OK
+	CAN_GET_RXMESSAGE_FAILED,
+	// CAN_ERROR indicates a generic error has occurred
+	CAN_ERROR,
+}TeCanALRet;
+
+// TeEndianness contains endian type of incoming message
+typedef enum {
+    UNKNOWN_ENDIANNESS,
+    CAN_BIG_ENDIAN,
+    CAN_LITTLE_ENDIAN,
+} TeCanALEndianness;
+
+// BinaryUnmarshaller gets raw bytes from CAN Rx and updates the
+// global struct instance with the associated CAN ID
+typedef TeCanALRet BinaryUnmarshaller(uint8_t*);
+
+// BinaruMarshaller takes the global struct instance and converts it to raw bytes
+// to prepare it for transmission
+typedef TeCanALRet BinaryMarshaller(uint8_t*);
+
+#endif /* INC_CANAL_TYPES_H_ */

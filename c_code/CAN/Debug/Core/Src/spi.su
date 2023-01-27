@@ -1,0 +1,11 @@
+../Core/Src/spi.c:16:22:SPI_Select	16	static
+../Core/Src/spi.c:47:22:SPI_Baud_Rate_Select	24	static
+../Core/Src/spi.c:66:22:SPI_Datasize_Select	16	static
+../Core/Src/spi.c:73:22:SPI_Clock_Phase_Select	16	static
+../Core/Src/spi.c:91:22:SPI_Clock_Polarity_Select	16	static
+../Core/Src/spi.c:109:22:SPI_MSB_Select	16	static
+../Core/Src/spi.c:126:13:SPI_Default_Configs	16	static
+../Core/Src/spi.c:140:15:SPI_Init	24	static
+../Core/Src/spi.c:180:15:SPI_Transmit	32	static
+../Core/Src/spi.c:193:15:SPI_Transmit_Receive	40	static
+../Core/Src/spi.c:206:15:SPI_Deinit	24	static
