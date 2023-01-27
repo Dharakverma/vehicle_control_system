@@ -1,12 +1,12 @@
 classdef BM_STATUSES < Simulink.IntEnumType
     enumeration 
-        UNKNOWN(0)
-        INIT(1)
-        IDLE(2)
-        STARTUP(3)
+        BM_UNKNOWN(0)
+        BM_INIT(1)
+        BM_IDLE(2)
+        BM_STARTUP(3)
         INIT_PRECHARGE(4)
         PRECHARGE(5)
-        RUNNING(6)
+        BM_RUNNING(6)
         ERR_PRECHARGE_CLOSED(7)
         ERR_STARTUP(8)
         ERR_INIT_PRECHARGE(9)

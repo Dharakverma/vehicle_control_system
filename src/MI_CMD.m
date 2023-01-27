@@ -1,10 +1,9 @@
 classdef MI_CMD < Simulink.IntEnumType
     enumeration 
-        UNKNOWN(0)
-        INIT(1)
-        IDLE(2)
-        STARTUP(3)
-        SHUTDOWN(4)
-        ERR_RESET(5)
+        CMD_INIT(0)
+        IDLE(1)
+        CMD_STARTUP(2)
+        CMD_SHUTDOWN(3)
+        ERR_RESET(4)
     end
 end
