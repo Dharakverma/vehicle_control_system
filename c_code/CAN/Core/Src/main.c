@@ -167,7 +167,7 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
   // Start 0.2s timer interrupt
-  HAL_TIM_Base_Start_IT(&htim2);
+  HAL_TIM_Base_Start_IT(&htime2);
 
   UART_st uart3 = {
 	  .huart = &huart3,
@@ -368,7 +368,7 @@ static void MX_ADC1_Init(void)
   * @retval None
   */
 static void MX_ADC2_Init(void)
-// {
+ {
 
   /* USER CODE BEGIN ADC2_Init 0 */
 

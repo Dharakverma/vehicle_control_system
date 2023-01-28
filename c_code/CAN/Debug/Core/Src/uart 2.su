@@ -1,0 +1,10 @@
+../Core/Src/uart.c:18:23:UART_Select	16	static
+../Core/Src/uart.c:55:23:UART_Baud_Rate_Select	16	static
+../Core/Src/uart.c:68:23:UART_Datasize_Select	16	static
+../Core/Src/uart.c:89:23:UART_Mode_Select	16	static
+../Core/Src/uart.c:110:23:UART_MSB_Select	16	static
+../Core/Src/uart.c:128:13:UART_Default_Configs	16	static
+../Core/Src/uart.c:139:16:UART_Init	24	static
+../Core/Src/uart.c:176:16:UART_Transmit	32	static
+../Core/Src/uart.c:189:16:UART_Receive	32	static
+../Core/Src/uart.c:201:16:UART_Deinit	24	static

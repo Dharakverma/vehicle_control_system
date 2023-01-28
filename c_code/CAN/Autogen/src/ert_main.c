@@ -32,8 +32,7 @@
  * your application needs.  This example simply sets an error status in the
  * real-time model and returns from rt_OneStep.
  */
-void rt_OneStep(void)
-{
+void rt_OneStep(void) {
   static boolean_T OverrunFlag = false;
 
   /* Disable interrupts here */
@@ -61,40 +60,6 @@ void rt_OneStep(void)
   /* Disable interrupts here */
   /* Restore FPU context here (if necessary) */
   /* Enable interrupts here */
-}
-
-/*
- * The example main function illustrates what is required by your
- * application code to initialize, execute, and terminate the generated code.
- * Attaching rt_OneStep to a real-time clock is target specific. This example
- * illustrates how you do this relative to initializing the model.
- */
-int_T main(int_T argc, const char *argv[])
-{
-  /* Unused arguments */
-  (void)(argc);
-  (void)(argv);
-
-  /* Initialize model */
-  controller_initialize();
-
-  /* Attach rt_OneStep to a timer or interrupt service routine with
-   * period 0.2 seconds (base rate of the model) here.
-   * The call syntax for rt_OneStep is
-   *
-   *  rt_OneStep();
-   */
-  printf("Warning: The simulation will run forever. "
-         "Generated ERT main won't simulate model step behavior. "
-         "To change this behavior select the 'MAT-file logging' option.\n");
-  fflush((NULL));
-  while (rtmGetErrorStatus(controller_M) == (NULL)) {
-    /*  Perform application tasks here */
-  }
-
-  /* Terminate model */
-  controller_terminate();
-  return 0;
 }
 
 /*

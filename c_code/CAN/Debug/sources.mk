@@ -21,6 +21,7 @@ C_DEPS :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
+Autogen/src \
 Core/Inc \
 Core/Src \
 Core/Startup \
