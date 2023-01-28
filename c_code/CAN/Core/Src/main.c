@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include <limits.h>
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -106,6 +107,7 @@ uint8_t TxData3[8];
 //uint8_t TxData4[8];
 uint8_t RxData[8];
 uint32_t TxMailbox;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -142,6 +144,8 @@ int main(void)
 
   /* USER CODE BEGIN Init */
 
+  TIM_HandleTypeDef htime2;
+
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -158,7 +162,11 @@ int main(void)
   MX_ADC1_Init();
   MX_ADC2_Init();
   MX_TIM2_Init();
+
   /* USER CODE BEGIN 2 */
+  // Start 0.2s timer interrupt
+  HAL_TIM_Base_Start_IT(&htim2);
+
   UART_st uart3 = {
 	  .huart = &huart3,
 	  .bit_position = LSB_First,
@@ -238,16 +246,14 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)  {
-    HAL_Delay(500);
 //    printf(" \n\r");
 //    printf("AMK_SystRdy = %d \n\r",AMK_bSystemReady);
 //    printf("AMK_bError = %d \n\r",AMK_bError);
 
-
-    if(motorTorque == 10){
-    	HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-        printf("%d \n\r",motorTorque);
-    }
+    // if(motorTorque == 10){
+    // 	HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+    //     printf("%d \n\r",motorTorque);
+    // }
 
 	//HAL_CAN_AddTxMessage(&hcan1, &TxHeader2, TxData2, &TxMailbox);
 
@@ -360,7 +366,7 @@ static void MX_ADC1_Init(void)
   * @retval None
   */
 static void MX_ADC2_Init(void)
-{
+// {
 
   /* USER CODE BEGIN ADC2_Init 0 */
 
@@ -491,7 +497,7 @@ static void MX_TIM2_Init(void)
 // Callback function for 0.2ms time based IRQ to run control system
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)
 {
-    G
+  rt_OneStep();
 }
 
 /**
