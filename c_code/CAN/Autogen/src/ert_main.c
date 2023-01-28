@@ -90,6 +90,10 @@ int_T main(int_T argc, const char *argv[])
   fflush((NULL));
   while (rtmGetErrorStatus(controller_M) == (NULL)) {
     /*  Perform application tasks here */
+
+
+
+
   }
 
   /* Terminate model */
