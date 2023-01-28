@@ -9,7 +9,7 @@
  *
  * Model version                  : 1.9
  * Simulink Coder version         : 9.8 (R2022b) 13-May-2022
- * C/C++ source code generated on : Fri Jan 27 13:18:25 2023
+ * C/C++ source code generated on : Sat Jan 28 16:12:49 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -29,7 +29,7 @@ typedef enum {
   STARTUP,
   RUNNING,
   SHUTDOWN,
-  ERROR,
+  MI_STS_ERROR,
   OFF
 } MI_STATUSES;
 

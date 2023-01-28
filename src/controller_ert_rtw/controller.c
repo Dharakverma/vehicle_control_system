@@ -9,7 +9,7 @@
  *
  * Model version                  : 1.9
  * Simulink Coder version         : 9.8 (R2022b) 13-May-2022
- * C/C++ source code generated on : Fri Jan 27 13:18:25 2023
+ * C/C++ source code generated on : Sat Jan 28 16:12:49 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -187,7 +187,7 @@ void controller_step(void)
         controller_DW.is_c3_governor_lib = controller_IN_RUNNING_ERROR;
         controller_DW.is_RUNNING_ERROR = controller_IN_HV_run_error;
         controller_B.GOV_e_diCmd = SYSTEM_ERROR;
-      } else if (controller_DW.Delay1_DSTATE == ERROR) {
+      } else if (controller_DW.Delay1_DSTATE == MI_STS_ERROR) {
         controller_DW.is_c3_governor_lib = controller_IN_RUNNING_ERROR;
         controller_DW.is_RUNNING_ERROR = controller_IN_Motor_run_error;
         controller_B.GOV_e_diCmd = SYSTEM_ERROR;
@@ -213,7 +213,7 @@ void controller_step(void)
           controller_DW.is_STARTUP = controller_IN_NO_ACTIVE_CHILD;
           controller_DW.is_c3_governor_lib = controller_IN_STARTUP_ERROR;
           controller_DW.is_STARTUP_ERROR = contro_IN_DriverInterface_Error;
-        } else if (controller_DW.Delay1_DSTATE == ERROR) {
+        } else if (controller_DW.Delay1_DSTATE == MI_STS_ERROR) {
           if (controller_DW.motorStartCount >= 5) {
             controller_DW.is_STARTUP = controller_IN_NO_ACTIVE_CHILD;
             controller_DW.is_c3_governor_lib = controller_IN_STARTUP_ERROR;
@@ -602,7 +602,7 @@ void controller_step(void)
       if (controller_U.AMK_bError) {
         controller_DW.is_c3_motor_interface_lib =
           controller_IN_AMK_errorDetected;
-        controller_B.MI_motorStatus = ERROR;
+        controller_B.MI_motorStatus = MI_STS_ERROR;
       } else if (controller_B.GOV_e_miCmd == CMD_SHUTDOWN) {
         controller_DW.is_c3_motor_interface_lib = controller_IN_AMK_shutdown;
         controller_DW.is_AMK_shutdown = control_IN_enforceSetpointsZero;
@@ -641,7 +641,7 @@ void controller_step(void)
           controller_DW.is_AMK_shutdown = controller_IN_NO_ACTIVE_CHILD;
           controller_DW.is_c3_motor_interface_lib =
             controller_IN_AMK_errorDetected;
-          controller_B.MI_motorStatus = ERROR;
+          controller_B.MI_motorStatus = MI_STS_ERROR;
         }
         break;
 
@@ -657,7 +657,7 @@ void controller_step(void)
           controller_DW.is_AMK_shutdown = controller_IN_NO_ACTIVE_CHILD;
           controller_DW.is_c3_motor_interface_lib =
             controller_IN_AMK_errorDetected;
-          controller_B.MI_motorStatus = ERROR;
+          controller_B.MI_motorStatus = MI_STS_ERROR;
         }
         break;
 
@@ -688,7 +688,7 @@ void controller_step(void)
           controller_DW.is_AMK_shutdown = controller_IN_NO_ACTIVE_CHILD;
           controller_DW.is_c3_motor_interface_lib =
             controller_IN_AMK_errorDetected;
-          controller_B.MI_motorStatus = ERROR;
+          controller_B.MI_motorStatus = MI_STS_ERROR;
         }
         break;
       }
@@ -709,7 +709,7 @@ void controller_step(void)
           controller_DW.is_AMK_startup = controller_IN_NO_ACTIVE_CHILD;
           controller_DW.is_c3_motor_interface_lib =
             controller_IN_AMK_errorDetected;
-          controller_B.MI_motorStatus = ERROR;
+          controller_B.MI_motorStatus = MI_STS_ERROR;
         }
         break;
 
@@ -726,7 +726,7 @@ void controller_step(void)
           controller_DW.is_AMK_startup = controller_IN_NO_ACTIVE_CHILD;
           controller_DW.is_c3_motor_interface_lib =
             controller_IN_AMK_errorDetected;
-          controller_B.MI_motorStatus = ERROR;
+          controller_B.MI_motorStatus = MI_STS_ERROR;
         }
         break;
 
@@ -745,7 +745,7 @@ void controller_step(void)
           controller_DW.is_AMK_startup = controller_IN_NO_ACTIVE_CHILD;
           controller_DW.is_c3_motor_interface_lib =
             controller_IN_AMK_errorDetected;
-          controller_B.MI_motorStatus = ERROR;
+          controller_B.MI_motorStatus = MI_STS_ERROR;
         }
         break;
 
@@ -760,7 +760,7 @@ void controller_step(void)
           controller_DW.is_AMK_startup = controller_IN_NO_ACTIVE_CHILD;
           controller_DW.is_c3_motor_interface_lib =
             controller_IN_AMK_errorDetected;
-          controller_B.MI_motorStatus = ERROR;
+          controller_B.MI_motorStatus = MI_STS_ERROR;
         }
         break;
       }
@@ -969,8 +969,8 @@ void controller_step(void)
    *  RelationalOperator: '<S4>/motorErrorActive'
    *  Switch: '<S4>/Switch1'
    */
-  if (controller_B.MI_motorStatus == ERROR) {
-    controller_DW.Delay1_DSTATE = ERROR;
+  if (controller_B.MI_motorStatus == MI_STS_ERROR) {
+    controller_DW.Delay1_DSTATE = MI_STS_ERROR;
   } else {
     controller_DW.Delay1_DSTATE = controller_B.MI_motorStatus;
   }
