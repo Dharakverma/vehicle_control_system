@@ -8,7 +8,6 @@ C_SRCS += \
 ../Core/Src/canal_frontcontroller_messages.c \
 ../Core/Src/main.c \
 ../Core/Src/printf.c \
-../Core/Src/spi.c \
 ../Core/Src/stm32f7xx_hal_msp.c \
 ../Core/Src/stm32f7xx_it.c \
 ../Core/Src/sysmem.c \
@@ -19,7 +18,6 @@ OBJS += \
 ./Core/Src/canal_frontcontroller_messages.o \
 ./Core/Src/main.o \
 ./Core/Src/printf.o \
-./Core/Src/spi.o \
 ./Core/Src/stm32f7xx_hal_msp.o \
 ./Core/Src/stm32f7xx_it.o \
 ./Core/Src/sysmem.o \
@@ -30,7 +28,6 @@ C_DEPS += \
 ./Core/Src/canal_frontcontroller_messages.d \
 ./Core/Src/main.d \
 ./Core/Src/printf.d \
-./Core/Src/spi.d \
 ./Core/Src/stm32f7xx_hal_msp.d \
 ./Core/Src/stm32f7xx_it.d \
 ./Core/Src/sysmem.d \
@@ -45,7 +42,7 @@ Core/Src/%.o Core/Src/%.su: ../Core/Src/%.c Core/Src/subdir.mk
 clean: clean-Core-2f-Src
 
 clean-Core-2f-Src:
-	-$(RM) ./Core/Src/canal_frontcontroller_messages.d ./Core/Src/canal_frontcontroller_messages.o ./Core/Src/canal_frontcontroller_messages.su ./Core/Src/main.d ./Core/Src/main.o ./Core/Src/main.su ./Core/Src/printf.d ./Core/Src/printf.o ./Core/Src/printf.su ./Core/Src/spi.d ./Core/Src/spi.o ./Core/Src/spi.su ./Core/Src/stm32f7xx_hal_msp.d ./Core/Src/stm32f7xx_hal_msp.o ./Core/Src/stm32f7xx_hal_msp.su ./Core/Src/stm32f7xx_it.d ./Core/Src/stm32f7xx_it.o ./Core/Src/stm32f7xx_it.su ./Core/Src/sysmem.d ./Core/Src/sysmem.o ./Core/Src/sysmem.su ./Core/Src/system_stm32f7xx.d ./Core/Src/system_stm32f7xx.o ./Core/Src/system_stm32f7xx.su ./Core/Src/uart.d ./Core/Src/uart.o ./Core/Src/uart.su
+	-$(RM) ./Core/Src/canal_frontcontroller_messages.d ./Core/Src/canal_frontcontroller_messages.o ./Core/Src/canal_frontcontroller_messages.su ./Core/Src/main.d ./Core/Src/main.o ./Core/Src/main.su ./Core/Src/printf.d ./Core/Src/printf.o ./Core/Src/printf.su ./Core/Src/stm32f7xx_hal_msp.d ./Core/Src/stm32f7xx_hal_msp.o ./Core/Src/stm32f7xx_hal_msp.su ./Core/Src/stm32f7xx_it.d ./Core/Src/stm32f7xx_it.o ./Core/Src/stm32f7xx_it.su ./Core/Src/sysmem.d ./Core/Src/sysmem.o ./Core/Src/sysmem.su ./Core/Src/system_stm32f7xx.d ./Core/Src/system_stm32f7xx.o ./Core/Src/system_stm32f7xx.su ./Core/Src/uart.d ./Core/Src/uart.o ./Core/Src/uart.su
 
 .PHONY: clean-Core-2f-Src
 
