@@ -155,6 +155,9 @@ extern void controller_terminate(void);
 /* Real-time Model object */
 extern RT_MODEL_controller_T *const controller_M;
 
+// Controller step function declaration
+void rt_OneStep(void);
+
 /*-
  * These blocks were eliminated from the model due to optimizations:
  *

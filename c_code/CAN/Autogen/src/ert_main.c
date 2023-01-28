@@ -32,7 +32,6 @@
  * your application needs.  This example simply sets an error status in the
  * real-time model and returns from rt_OneStep.
  */
-void rt_OneStep(void);
 void rt_OneStep(void)
 {
   static boolean_T OverrunFlag = false;

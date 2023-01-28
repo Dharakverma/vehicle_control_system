@@ -27,6 +27,7 @@
 #include "uart.h"
 #include "printf.h"
 #include "canal.h"
+#include "controller.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -485,6 +486,12 @@ static void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 2 */
 
+}
+
+// Callback function for 0.2ms time based IRQ to run control system
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)
+{
+    G
 }
 
 /**
