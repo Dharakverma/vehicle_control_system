@@ -9,7 +9,7 @@
  *
  * Model version                  : 1.9
  * Simulink Coder version         : 9.8 (R2022b) 13-May-2022
- * C/C++ source code generated on : Fri Jan 27 13:18:25 2023
+ * C/C++ source code generated on : Sat Jan 28 16:12:49 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -32,6 +32,7 @@
  * your application needs.  This example simply sets an error status in the
  * real-time model and returns from rt_OneStep.
  */
+void rt_OneStep(void);
 void rt_OneStep(void)
 {
   static boolean_T OverrunFlag = false;
@@ -90,10 +91,6 @@ int_T main(int_T argc, const char *argv[])
   fflush((NULL));
   while (rtmGetErrorStatus(controller_M) == (NULL)) {
     /*  Perform application tasks here */
-
-
-
-
   }
 
   /* Terminate model */
