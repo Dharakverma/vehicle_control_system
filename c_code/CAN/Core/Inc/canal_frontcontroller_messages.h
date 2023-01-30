@@ -45,10 +45,10 @@
 typedef enum {
     UNKNOWN_CAN_ID = 0,
     AMK_SETPOINTS_CAN_ID = ((uint32_t) 0x240), //this one is a test
-    AMK0_STS = ((uint32_t) 0x284),
-    AMK1_STS = ((uint32_t) 0x285),
-    AMK0_TEMPS = ((uint32_t) 0x286),
-    AMK1_TEMPS = ((uint32_t) 0x287),
+    AMK0_STS_CAN_ID = ((uint32_t) 0x284),
+    AMK1_STS_CAN_ID = ((uint32_t) 0x285),
+    AMK0_TEMPS_CAN_ID = ((uint32_t) 0x286),
+    AMK1_TEMPS_CAN_ID = ((uint32_t) 0x287),
 } TeMessageID;
 
 /*********************************************************
@@ -207,8 +207,8 @@ typedef struct AMK_TEMPS{
 *********************************************************/
 
 extern TsAMKSetpoints AMK_Setpoints;
-//TsAMK_STS random;
-//extern TsAMK_TEMPS AMK0_TEMPS;
+extern TsAMK_STS AMK0_STS, AMK1_STS;
+extern TsAMK_TEMPS AMK0_TEMPS, AMK1_TEMPS;
 
 /*********************************************************
 *               PUBLIC FUNCTION DECLARATIONS

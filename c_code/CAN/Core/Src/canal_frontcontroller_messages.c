@@ -178,7 +178,7 @@ TeCanALRet MarshalAMKSetpoints(uint8_t* TxData){
 
 TeCanALRet UnmarshalAMK0_STS(uint8_t * RxData){
     uint64_t data;
-//    TsAMK_STS temp;
+    TsAMK_STS temp;
     TeCanALRet ret;
 
     ret = getDataWordFromByteArray(RxData, &data, AMK_STS_ENDIANNESS);
@@ -198,9 +198,37 @@ TeCanALRet UnmarshalAMK0_STS(uint8_t * RxData){
 
     // Apply linear conversion (not doing this rn since just testing)
 
+    // Writing to global struct instance
+    AMK0_STS = temp;
+
+    return CAN_OK;
+
+}
+
+TeCanALRet UnmarshalAMK1_STS(uint8_t * RxData){
+    uint64_t data;
+    TsAMK_STS temp;
+    TeCanALRet ret;
+
+    ret = getDataWordFromByteArray(RxData, &data, AMK_STS_ENDIANNESS);
+    if (ret != CAN_OK) return ret;
+
+    // Read raw bits
+    temp.AMK_bError = GET_BITS(data, AMK_STS_bError_START, AMK_STS_bError_LENGTH);
+    temp.AMK_bWarn = GET_BITS(data, AMK_STS_bWarn_START, AMK_STS_bWarn_LENGTH);
+    temp.AMK_bQuitDcOn = GET_BITS(data, AMK_STS_bQuitDCOn_START, AMK_STS_bQuitDCOn_LENGTH);
+    temp.AMK_bDcOn = GET_BITS(data, AMK_STS_bDcOn_START, AMK_STS_bDcOn_LENGTH);
+    temp.AMK_bQuitInvertorOn = GET_BITS(data, AMK_STS_bQuitInverterOn_START, AMK_STS_bQuitInverterOn_LENGTH);
+    temp.AMK_bInverterOn = GET_BITS(data, AMK_STS_bInverterOn_START, AMK_STS_bInverterOn_LENGTH);
+    temp.AMK_bDerating = GET_BITS(data, AMK_STS_bDerating_START, AMK_STS_bDerating_LENGTH);
+    temp.AMK_ActualVelocity = GET_BITS(data, AMK_STS_ActualVelocity_START, AMK_STS_ActualVelocity_LENGTH);
+    temp.AMK_TorqueCurrent = GET_BITS(data, AMK_STS_TorqueCurrent_START, AMK_STS_TorqueCurrent_LENGTH);
+    temp.AMK_magnetizingCurrent = GET_BITS(data, AMK_STS_MagnetizingCurrent_START, AMK_STS_MagnetizingCurrent_LENGTH);
+
+    // Apply linear conversion (not doing this rn since just testing)
 
     // Writing to global struct instance
-//    AMK0_STS = temp;
+    AMK1_STS = temp;
 
     return CAN_OK;
 
@@ -216,6 +244,8 @@ static const struct {
 }CANAL_RX_MESSAGE_TABLE[NUM_RX_MESSAGES] = {
 	// MESSAGE ID 				// POINTER TO UNMARSHAL FUNCTION
 	{AMK_SETPOINTS_CAN_ID,		&UnmarshalAMKSetpoints},
+    {AMK0_STS_CAN_ID,		    &UnmarshalAMK0_STS},
+    {AMK0_STS_CAN_ID,		    &UnmarshalAMK0_STS},
 };
 
 static const struct {
