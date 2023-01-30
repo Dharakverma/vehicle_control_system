@@ -44,17 +44,64 @@
 
 typedef enum {
     UNKNOWN_CAN_ID = 0,
-    AMK_SETPOINTS_CAN_ID = ((uint32_t) 0x240),
+    AMK_SETPOINTS_CAN_ID = ((uint32_t) 0x240), //this one is a test
+    AMK0_STS = ((uint32_t) 0x284),
+    AMK1_STS = ((uint32_t) 0x285),
+    AMK0_TEMPS = ((uint32_t) 0x286),
+    AMK1_TEMPS = ((uint32_t) 0x287),
 } TeMessageID;
 
 /*********************************************************
 *                     MESSAGE STRUCTS
 *********************************************************/
 
-typedef struct {
+
+typedef struct test{ //this one is a test
     uint16_t AMK_TargetVelocity;
     _Bool bEnable;
 }TsAMKSetpoints;
+
+typedef struct AMK0_STS{
+    _Bool       AMK0_bSystemReady;
+    _Bool       AMK0_bError;
+    _Bool       AMK0_bWarn;
+    _Bool       AMK0_bQuitDcOn;
+    _Bool       AMK0_bDcOn;
+    _Bool       AMK0_bQuitInvertorOn;
+    _Bool       AMK0_bInverterOn;
+    _Bool       AMK0_bDerating;
+    uint16_t    AMK0_ActualVelocity;
+    uint16_t    AMK0_TorqueCurrent;
+    uint16_t    AMK0_magnetizingCurrent;
+}TsAMK0_STS;
+
+typedef struct AMK1_STS{
+    _Bool       AMK1_bSystemReady;
+    _Bool       AMK1_bError;
+    _Bool       AMK1_bWarn;
+    _Bool       AMK1_bQuitDcOn;
+    _Bool       AMK1_bDcOn;
+    _Bool       AMK1_bQuitInvertorOn;
+    _Bool       AMK1_bInverterOn;
+    _Bool       AMK1_bDerating;
+    uint16_t    AMK1_ActualVelocity;
+    uint16_t    AMK1_TorqueCurrent;
+    uint16_t    AMK1_magnetizingCurrent;
+}TsAMK1_STS;
+
+typedef struct AMK0_TEMPS{
+    uint16_t AMK0_TempMotor;
+    uint16_t AMK0_TempInverter;
+    uint16_t AMK0_ErrorInfo;
+    uint16_t AMK0_TempIGBT;
+}TsAMK0_TEMPS;
+
+typedef struct AMK1_TEMPS{
+    uint16_t AMK1_TempMotor;
+    uint16_t AMK1_TempInverter;
+    uint16_t AMK1_ErrorInfo;
+    uint16_t AMK1_TempIGBT;
+}TsAMK1_TEMPS;
 
 /*********************************************************
 *                       MESSAGE MACROS

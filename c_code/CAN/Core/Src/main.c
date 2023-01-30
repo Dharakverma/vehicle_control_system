@@ -172,12 +172,6 @@ int main(void)
   TxHeader3.StdId = 0x500;
   TxHeader3.TransmitGlobalTime = DISABLE;
 
-  TxHeader4.DLC = 8;
-  TxHeader4.IDE = CAN_ID_STD;
-  TxHeader4.RTR = CAN_RTR_DATA;
-  TxHeader4.StdId = 0x200;
-  TxHeader4.TransmitGlobalTime = DISABLE;
-
   TxData2[0] = 0xAB;
   TxData2[1] = 0xCD;
   TxData2[2] = 0xEF;
