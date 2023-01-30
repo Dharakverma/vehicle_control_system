@@ -127,6 +127,9 @@ static void CAN_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+uint32_t raw = 0;
+uint32_t counter = 0;
+
 /* USER CODE END 0 */
 
 /**
@@ -216,15 +219,6 @@ int main(void)
   TxHeader4.StdId = 0x200;
   TxHeader4.TransmitGlobalTime = DISABLE;
 
-//  TxData[0] = 0xFF;
-//  TxData[1] = 0x01;
-//  TxData[2] = 0xFF;
-//  TxData[3] = 0xFF;
-//  TxData[4] = 0xFF;
-//  TxData[5] = 0xFF;
-//  TxData[6] = 0xFF;
-//  TxData[7] = 0xFF;
-
   TxData2[0] = 0xAB;
   TxData2[1] = 0xCD;
   TxData2[2] = 0xEF;
@@ -243,24 +237,23 @@ int main(void)
   TxData3[6] = 0xFF;
   TxData3[7] = 0xFF;
 
+  // Init adc 1 and 2
+  MX_ADC1_Init();
+  MX_ADC2_Init();
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)  {
-//    printf(" \n\r");
-//    printf("AMK_SystRdy = %d \n\r",AMK_bSystemReady);
-//    printf("AMK_bError = %d \n\r",AMK_bError);
+	// Get ADC value
+	HAL_ADC_Start(&hadc1);
+	HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
+	raw = HAL_ADC_GetValue(&hadc1);
 
-    // if(motorTorque == 10){
-    // 	HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-    //     printf("%d \n\r",motorTorque);
-    // }
+	controller_U.DI_V_AccelPedalPos1 = raw;
 
-	//HAL_CAN_AddTxMessage(&hcan1, &TxHeader2, TxData2, &TxMailbox);
-
-	//HAL_CAN_AddTxMessage(&hcan1, &TxHeader2, TxData2, &TxMailbox);
-	//HAL_CAN_AddTxMessage(&hcan1, &TxHeader3, TxData3, &TxMailbox);
+	HAL_Delay(100);
   }
     /* USER CODE END WHILE */
 
