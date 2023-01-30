@@ -26,7 +26,6 @@
 /* USER CODE BEGIN Includes */
 #include "string.h"
 #include "stdio.h"
-#include "CANreceive.h"
 #include "uart.h"
 #include "printf.h"
 #include "canal.h"
@@ -58,50 +57,10 @@ TIM_HandleTypeDef htim2;
 UART_HandleTypeDef huart3;
 
 /* USER CODE BEGIN PV */
-uint16_t vehicleSpeed = 0;
-uint16_t motorTorque = 0;
-
-uint16_t AMK0_bSystemReady = 0;
-uint16_t AMK0_bError = 0;
-uint16_t AMK0_bWarn = 0;
-uint16_t AMK0_bQuitDcOn = 0;
-uint16_t AMK0_bDcOn = 0;
-uint16_t AMK0_bQuitInvertorOn = 0;
-uint16_t AMK0_bInverterOn = 0;
-uint16_t AMK0_bDerating = 0;
-uint16_t AMK0_ActualVelocity = 0;
-uint16_t AMK0_TorqueCurrent = 0;
-uint16_t AMK0_magnetizingCurrent = 0;
-
-uint16_t AMK1_bSystemReady;
-uint16_t AMK1_bError;
-uint16_t AMK1_bWarn;
-uint16_t AMK1_bQuitDcOn;
-uint16_t AMK1_bDcOn;
-uint16_t AMK1_bQuitInvertorOn;
-uint16_t AMK1_bInverterOn;
-uint16_t AMK1_bDerating;
-uint16_t AMK1_ActualVelocity;
-uint16_t AMK1_TorqueCurrent;
-uint16_t AMK1_magnetizingCurrent;
-
-uint16_t AMK0_TempMotor;
-uint16_t AMK0_TempInverter;
-uint16_t AMK0_ErrorInfo;
-uint16_t AMK0_TempIGBT;
-
-uint16_t AMK1_TempMotor;
-uint16_t AMK1_TempInverter;
-uint16_t AMK1_ErrorInfo;
-uint16_t AMK1_TempIGBT;
 
 CAN_TxHeaderTypeDef TxHeader;
 CAN_TxHeaderTypeDef TxHeader2;
 CAN_TxHeaderTypeDef TxHeader3;
-CAN_TxHeaderTypeDef TxHeader4;
-CAN_TxHeaderTypeDef TxHeader5;
-CAN_TxHeaderTypeDef TxHeader6;
-CAN_TxHeaderTypeDef TxHeader7;
 CAN_RxHeaderTypeDef RxHeader;
 //uint8_t TxData[8];
 uint8_t TxData2[8];
@@ -593,7 +552,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 		Error_Handler();
 	}
 
-	IncomingCANMessageHandler(&RxHeader.StdId, RxData);
+//	IncomingCANMessageHandler(&RxHeader.StdId, RxData);
 }
 /* USER CODE END 4 */
 
