@@ -61,55 +61,58 @@ typedef struct test{ //this one is a test
     _Bool bEnable;
 }TsAMKSetpoints;
 
-typedef struct AMK0_STS{
-    _Bool       AMK0_bSystemReady;
-    _Bool       AMK0_bError;
-    _Bool       AMK0_bWarn;
-    _Bool       AMK0_bQuitDcOn;
-    _Bool       AMK0_bDcOn;
-    _Bool       AMK0_bQuitInvertorOn;
-    _Bool       AMK0_bInverterOn;
-    _Bool       AMK0_bDerating;
-    uint16_t    AMK0_ActualVelocity;
-    uint16_t    AMK0_TorqueCurrent;
-    uint16_t    AMK0_magnetizingCurrent;
-}TsAMK0_STS;
+typedef struct AMK_STS{
+    _Bool       AMK_bSystemReady;
+    _Bool       AMK_bError;
+    _Bool       AMK_bWarn;
+    _Bool       AMK_bQuitDcOn;
+    _Bool       AMK_bDcOn;
+    _Bool       AMK_bQuitInvertorOn;
+    _Bool       AMK_bInverterOn;
+    _Bool       AMK_bDerating;
+    uint16_t    AMK_ActualVelocity;
+    uint16_t    AMK_TorqueCurrent;
+    uint16_t    AMK_magnetizingCurrent;
+}TsAMK_STS;
 
-typedef struct AMK1_STS{
-    _Bool       AMK1_bSystemReady;
-    _Bool       AMK1_bError;
-    _Bool       AMK1_bWarn;
-    _Bool       AMK1_bQuitDcOn;
-    _Bool       AMK1_bDcOn;
-    _Bool       AMK1_bQuitInvertorOn;
-    _Bool       AMK1_bInverterOn;
-    _Bool       AMK1_bDerating;
-    uint16_t    AMK1_ActualVelocity;
-    uint16_t    AMK1_TorqueCurrent;
-    uint16_t    AMK1_magnetizingCurrent;
-}TsAMK1_STS;
+// typedef struct AMK1_STS{
+//     _Bool       AMK1_bSystemReady;
+//     _Bool       AMK1_bError;
+//     _Bool       AMK1_bWarn;
+//     _Bool       AMK1_bQuitDcOn;
+//     _Bool       AMK1_bDcOn;
+//     _Bool       AMK1_bQuitInvertorOn;
+//     _Bool       AMK1_bInverterOn;
+//     _Bool       AMK1_bDerating;
+//     uint16_t    AMK1_ActualVelocity;
+//     uint16_t    AMK1_TorqueCurrent;
+//     uint16_t    AMK1_magnetizingCurrent;
+// }TsAMK1_STS;
 
-typedef struct AMK0_TEMPS{
-    uint16_t AMK0_TempMotor;
-    uint16_t AMK0_TempInverter;
-    uint16_t AMK0_ErrorInfo;
-    uint16_t AMK0_TempIGBT;
-}TsAMK0_TEMPS;
+typedef struct AMK_TEMPS{
+    uint16_t AMK_TempMotor;
+    uint16_t AMK_TempInverter;
+    uint16_t AMK_ErrorInfo;
+    uint16_t AMK_TempIGBT;
+}TsAMK_TEMPS;
 
-typedef struct AMK1_TEMPS{
-    uint16_t AMK1_TempMotor;
-    uint16_t AMK1_TempInverter;
-    uint16_t AMK1_ErrorInfo;
-    uint16_t AMK1_TempIGBT;
-}TsAMK1_TEMPS;
+// typedef struct AMK1_TEMPS{
+//     uint16_t AMK1_TempMotor;
+//     uint16_t AMK1_TempInverter;
+//     uint16_t AMK1_ErrorInfo;
+//     uint16_t AMK1_TempIGBT;
+// }TsAMK1_TEMPS;
 
 /*********************************************************
 *                       MESSAGE MACROS
 *********************************************************/
-#define NUM_RX_MESSAGES (1U)
+#define NUM_RX_MESSAGES (5U) // 1 test + 4 actual
 #define NUM_TX_MESSAGES (1U)
 
 #define AMK_SETPOINTS_ENDIANNESS (CAN_LITTLE_ENDIAN)
+#define AMK_STS_ENDIANNESS (CAN_LITTLE_ENDIAN)
+#define AMK_TEMP_ENDIANNESS (CAN_LITTLE_ENDIAN)
+
 
 /*********************************************************
 *                       SIGNAL MACROS
@@ -124,83 +127,79 @@ typedef struct AMK1_TEMPS{
 // AMK ACTUAL VALUES 1
 #define AMK_STS_bSystemReady_START  (8U)
 #define AMK_STS_bSystemReady_LENGTH (1U)
-#define AMK_STS_bSystemReady_FACTOR (0U)
-#define AMK_STS_bSystemReady_OFFSET (0U)
+// #define AMK_STS_bSystemReady_FACTOR (0U)
+// #define AMK_STS_bSystemReady_OFFSET (0U)
 
 #define AMK_STS_bError_START  (9U)
 #define AMK_STS_bError_LENGTH (1U)
-#define AMK_STS_bError_FACTOR (0U)
-#define AMK_STS_bError_OFFSET (0U)
+// #define AMK_STS_bError_FACTOR (0U)
+// #define AMK_STS_bError_OFFSET (0U)
 
 #define AMK_STS_bWarn_START  (10U)
 #define AMK_STS_bWarn_LENGTH (1U)
-#define AMK_STS_bWarn_FACTOR (0U)
-#define AMK_STS_bWarn_OFFSET (0U)
+// #define AMK_STS_bWarn_FACTOR (0U)
+// #define AMK_STS_bWarn_OFFSET (0U)
 
 #define AMK_STS_bQuitDCOn_START  (11U)
 #define AMK_STS_bQuitDCOn_LENGTH (1U)
-#define AMK_STS_bQuitDCOn_FACTOR (0U)
-#define AMK_STS_bQuitDCOn_OFFSET (0U)
+// #define AMK_STS_bQuitDCOn_FACTOR (0U)
+// #define AMK_STS_bQuitDCOn_OFFSET (0U)
 
 #define AMK_STS_bDcOn_START  (12U)
 #define AMK_STS_bDcOn_LENGTH (1U)
-#define AMK_STS_bDcOn_FACTOR (0U)
-#define AMK_STS_bDcOn_OFFSET (0U)
+// #define AMK_STS_bDcOn_FACTOR (0U)
+// #define AMK_STS_bDcOn_OFFSET (0U)
 
 #define AMK_STS_bQuitInverterOn_START  (13U)
 #define AMK_STS_bQuitInverterOn_LENGTH (1U)
-#define AMK_STS_bQuitInverterOn_FACTOR (0U)
-#define AMK_STS_bQuitInverterOn_OFFSET (0U)
+// #define AMK_STS_bQuitInverterOn_FACTOR (0U)
+// #define AMK_STS_bQuitInverterOn_OFFSET (0U)
 
 #define AMK_STS_bInverterOn_START   (14U)
 #define AMK_STS_bInverterOn_LENGTH  (1U)
-#define AMK_STS_bInverterOn_FACTOR  (0U)
-#define AMK_STS_bInverterOn_OFFSET  (0U)
+// #define AMK_STS_bInverterOn_FACTOR  (0U)
+// #define AMK_STS_bInverterOn_OFFSET  (0U)
 
 #define AMK_STS_bDerating_START  (15U)
 #define AMK_STS_bDerating_LENGTH (1U)
-#define AMK_STS_bDerating_FACTOR (0U)
-#define AMK_STS_bDerating_OFFSET (0U)
+// #define AMK_STS_bDerating_FACTOR (0U)
+// #define AMK_STS_bDerating_OFFSET (0U)
 
-#define AMK_STS_bActualVelocity_START  (16U)
-#define AMK_STS_bActualVelocity_LENGTH (16U)
-#define AMK_STS_bActualVelocity_FACTOR (0U)
-#define AMK_STS_bActualVelocity_OFFSET (0U)
+#define AMK_STS_ActualVelocity_START  (16U)
+#define AMK_STS_ActualVelocity_LENGTH (16U)
+// #define AMK_STS_bActualVelocity_FACTOR (0U)
+// #define AMK_STS_bActualVelocity_OFFSET (0U)
 
-#define AMK_STS_bTorqueCurrent_START  (32U)
-#define AMK_STS_bTorqueCurrent_LENGTH (16U)
-#define AMK_STS_bTorqueCurrent_FACTOR (0U)
-#define AMK_STS_bTorqueCurrent_OFFSET (0U)
+#define AMK_STS_TorqueCurrent_START  (32U)
+#define AMK_STS_TorqueCurrent_LENGTH (16U)
+// #define AMK_STS_bTorqueCurrent_FACTOR (0U)
+// #define AMK_STS_bTorqueCurrent_OFFSET (0U)
 
-#define AMK_STS_bMagnetizingCurrent_START  (48U)
-#define AMK_STS_bMagnetizingCurrent_LENGTH (16U)
-#define AMK_STS_bMagnetizingCurrent_FACTOR (0U)
-#define AMK_STS_bMagnetizingCurrent_OFFSET (0U)
+#define AMK_STS_MagnetizingCurrent_START  (48U)
+#define AMK_STS_MagnetizingCurrent_LENGTH (16U)
+// #define AMK_STS_bMagnetizingCurrent_FACTOR (0U)
+// #define AMK_STS_bMagnetizingCurrent_OFFSET (0U)
 
 // AMK ACTUAL VALUES 2
 #define AMK_TEMPS_TempMotor_START  (0U)
 #define AMK_TEMPS_TempMotor_LENGTH (16U)
-#define AMK_TEMPS_TempMotor_FACTOR (0U)
-#define AMK_TEMPS_TempMotor_OFFSET (0U)
+// #define AMK_TEMPS_TempMotor_FACTOR (0U)
+// #define AMK_TEMPS_TempMotor_OFFSET (0U)
 
 #define AMK_TEMPS_TempInverter_START  (16U)
 #define AMK_TEMPS_TempInverter_LENGTH (16U)
-#define AMK_TEMPS_TempInverter_FACTOR (0U)
-#define AMK_TEMPS_TempInverter_OFFSET (0U)
+// #define AMK_TEMPS_TempInverter_FACTOR (0U)
+// #define AMK_TEMPS_TempInverter_OFFSET (0U)
 
 #define AMK_TEMPS_Error_START  (32U)
 #define AMK_TEMPS_Error_LENGTH (16U)
-#define AMK_TEMPS_Error_FACTOR (0U)
-#define AMK_TEMPS_Error_OFFSET (0U)
+// #define AMK_TEMPS_Error_FACTOR (0U)
+// #define AMK_TEMPS_Error_OFFSET (0U)
 
 #define AMK_TEMPS_TempIGBT_START  (48U)
 #define AMK_TEMPS_TempIGBT_LENGTH (16U)
-#define AMK_TEMPS_TempIGBT_FACTOR (0U)
-#define AMK_TEMPS_TempIGBT_OFFSET (0U)
-
-
-// Actual Values
-#define AMK_STS_
+// #define AMK_TEMPS_TempIGBT_FACTOR (0U)
+// #define AMK_TEMPS_TempIGBT_OFFSET (0U)
 
 
 /*********************************************************
@@ -208,6 +207,8 @@ typedef struct AMK1_TEMPS{
 *********************************************************/
 
 extern TsAMKSetpoints AMK_Setpoints;
+//TsAMK_STS random;
+//extern TsAMK_TEMPS AMK0_TEMPS;
 
 /*********************************************************
 *               PUBLIC FUNCTION DECLARATIONS
