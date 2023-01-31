@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'controller'.
  *
- * Model version                  : 1.9
+ * Model version                  : 1.15
  * Simulink Coder version         : 9.8 (R2022b) 13-May-2022
- * C/C++ source code generated on : Sat Jan 28 16:12:49 2023
+ * C/C++ source code generated on : Tue Jan 31 00:31:24 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -20,6 +20,7 @@
 #include "controller.h"
 #include "rtwtypes.h"
 #include <math.h>
+#include "rt_nonfinite.h"
 #include "controller_types.h"
 #include "controller_private.h"
 
@@ -98,7 +99,7 @@ ExtY_controller_T controller_Y;
 /* Real-time model */
 static RT_MODEL_controller_T controller_M_;
 RT_MODEL_controller_T *const controller_M = &controller_M_;
-real32_T look1_iflf_binlxpw(real32_T u0, const real32_T bp0[], const real32_T
+real32_T look1_iflf_binlcpw(real32_T u0, const real32_T bp0[], const real32_T
   table[], uint32_T maxIndex)
 {
   real32_T frac;
@@ -109,20 +110,20 @@ real32_T look1_iflf_binlxpw(real32_T u0, const real32_T bp0[], const real32_T
      Search method: 'binary'
      Use previous index: 'off'
      Interpolation method: 'Linear point-slope'
-     Extrapolation method: 'Linear'
+     Extrapolation method: 'Clip'
      Use last breakpoint for index at or above upper limit: 'off'
      Remove protection against out-of-range input in generated code: 'off'
    */
   /* Prelookup - Index and Fraction
      Index Search method: 'binary'
-     Extrapolation method: 'Linear'
+     Extrapolation method: 'Clip'
      Use previous index: 'off'
      Use last breakpoint for index at or above upper limit: 'off'
      Remove protection against out-of-range input in generated code: 'off'
    */
   if (u0 <= bp0[0U]) {
     iLeft = 0U;
-    frac = (u0 - bp0[0U]) / (bp0[1U] - bp0[0U]);
+    frac = 0.0F;
   } else if (u0 < bp0[maxIndex]) {
     uint32_T bpIdx;
     uint32_T iRght;
@@ -144,7 +145,7 @@ real32_T look1_iflf_binlxpw(real32_T u0, const real32_T bp0[], const real32_T
     frac = (u0 - bp0[iLeft]) / (bp0[iLeft + 1U] - bp0[iLeft]);
   } else {
     iLeft = maxIndex - 1U;
-    frac = (u0 - bp0[maxIndex - 1U]) / (bp0[maxIndex] - bp0[maxIndex - 1U]);
+    frac = 1.0F;
   }
 
   /* Column-major Interpolation 1-D
@@ -160,7 +161,6 @@ real32_T look1_iflf_binlxpw(real32_T u0, const real32_T bp0[], const real32_T
 void controller_step(void)
 {
   real32_T a;
-  real32_T rtb_Switch2;
   real32_T rtb_TorqueLimit;
 
   /* Chart: '<S3>/Chart' incorporates:
@@ -292,9 +292,8 @@ void controller_step(void)
 
   /* Chart: '<S2>/Chart' incorporates:
    *  Delay: '<S3>/Delay2'
-   *  Inport: '<Root>/DI_b_DriverButton'
    */
-  if (controller_DW.temporalCounter_i1_a < 15U) {
+  if (controller_DW.temporalCounter_i1_a < 255U) {
     controller_DW.temporalCounter_i1_a++;
   }
 
@@ -348,7 +347,7 @@ void controller_step(void)
           /* Outport: '<Root>/DI_b_driverSpeaker' */
           /* case IN_SpeakerOn_: */
           controller_Y.DI_b_driverSpeaker = true;
-          if (controller_DW.temporalCounter_i1_a >= 10U) {
+          if (controller_DW.temporalCounter_i1_a >= 200U) {
             controller_DW.is_Ready_to_drive = controller_IN_SpeakerOff;
 
             /* Outport: '<Root>/DI_b_driverSpeaker' */
@@ -359,11 +358,8 @@ void controller_step(void)
 
        default:
         /* case IN_Waiting_for_driver: */
-        controller_DW.Delay2_DSTATE = WAITING_FOR_DRVR;
-        if (controller_U.DI_b_DriverButton == 1.0) {
-          controller_DW.is_DI_running = contr_IN_Driver_requested_start;
-          controller_DW.Delay2_DSTATE = DRV_START_REQ;
-        }
+        controller_DW.is_DI_running = contr_IN_Driver_requested_start;
+        controller_DW.Delay2_DSTATE = DRV_START_REQ;
         break;
       }
       break;
@@ -388,27 +384,6 @@ void controller_step(void)
 
   /* End of Chart: '<S2>/Chart' */
 
-  /* Switch: '<S2>/Switch2' incorporates:
-   *  Constant: '<S13>/LowerPotentiometerLimit1'
-   *  Constant: '<S13>/UpperPotentiometerLimit1'
-   *  Constant: '<S2>/Constant1'
-   *  Gain: '<S13>/Gain'
-   *  Inport: '<Root>/DI_V_BrakePedalPos'
-   *  Logic: '<S19>/FixPt Logical Operator'
-   *  Product: '<S20>/Divide'
-   *  RelationalOperator: '<S19>/Lower Test'
-   *  RelationalOperator: '<S19>/Upper Test'
-   *  Sum: '<S20>/Subtract'
-   */
-  if ((controller_U.DI_V_BrakePedalPos >= 0.0F) &&
-      (controller_U.DI_V_BrakePedalPos <= 1024.0F)) {
-    rtb_Switch2 = 0.0F;
-  } else {
-    rtb_Switch2 = (controller_U.DI_V_BrakePedalPos - 1024.0F) / 1024.0F * 100.0F;
-  }
-
-  /* End of Switch: '<S2>/Switch2' */
-
   /* MATLAB Function: '<S5>/RIGHT_LIMIT' incorporates:
    *  Constant: '<S5>/MaxMotorCurrent'
    *  Constant: '<S5>/MaxMotorTorque'
@@ -421,26 +396,28 @@ void controller_step(void)
   rtb_TorqueLimit = fmaxf(0.0999984741F * (real32_T)
     controller_U.AMK_MagnetizingCurrent, 0.0F);
   a = fminf(controller_ConstB.Gain1, 52.0F);
-  rtb_TorqueLimit = fminf(fmaxf(fmaxf(sqrtf(a * a - rtb_TorqueLimit *
-    rtb_TorqueLimit), 0.0F) * 600.0F / ((real32_T)
-    controller_U.AMK_ActualVelocity * 3.14159274F / 30.0F), 0.0F), 27.0F);
+  rtb_TorqueLimit = fminf(fmaxf(sqrtf(a * a - rtb_TorqueLimit * rtb_TorqueLimit),
+    0.0F) * 24.0F / (fmaxf(controller_U.AMK_ActualVelocity, 1.0F) * 3.14159274F /
+                     30.0F), 0.25F);
 
   /* Switch: '<S5>/Switch' incorporates:
-   *  Constant: '<S12>/LowerPotentiometerLimit1'
-   *  Constant: '<S12>/UpperPotentiometerLimit1'
+   *  Constant: '<S11>/LowerPotentiometerLimit1'
+   *  Constant: '<S11>/UpperPotentiometerLimit1'
    *  Constant: '<S5>/Constant6'
+   *  Gain: '<S5>/Gain2'
    *  If: '<S2>/If'
-   *  Inport: '<Root>/DI_V_AccelPedalPos2'
-   *  Logic: '<S17>/FixPt Logical Operator'
+   *  Inport: '<Root>/DI_V_AccelPedalPos1'
+   *  Logic: '<S11>/NOT'
+   *  Logic: '<S15>/FixPt Logical Operator'
    *  Logic: '<S2>/NOT'
    *  Lookup_n-D: '<S2>/AccelPedalPos1 LUT'
    *  MinMax: '<S5>/Min'
    *  Product: '<S5>/Divide'
-   *  RelationalOperator: '<S17>/Lower Test'
-   *  RelationalOperator: '<S17>/Upper Test'
+   *  RelationalOperator: '<S15>/Lower Test'
+   *  RelationalOperator: '<S15>/Upper Test'
    */
-  if (rtb_Switch2 > 0.0F) {
-    rtb_Switch2 = 0.0F;
+  if (controller_ConstB.Switch2 > 0.0F) {
+    rtb_TorqueLimit = 0.0F;
   } else {
     if (!controller_B.b_ReadyToDrive) {
       /* Outputs for IfAction SubSystem: '<S2>/If Action Subsystem' incorporates:
@@ -450,40 +427,40 @@ void controller_step(void)
        *  Constant: '<S2>/Constant'
        *  SignalConversion generated from: '<S8>/In1'
        */
-      rtb_Switch2 = 0.0F;
+      a = 0.0F;
 
       /* End of Outputs for SubSystem: '<S2>/If Action Subsystem' */
-    } else if ((controller_U.DI_V_AccelPedalPos2 >= 0.0F) &&
-               (controller_U.DI_V_AccelPedalPos2 <= 1024.0F)) {
-      /* If: '<S2>/If' incorporates:
-       *  Constant: '<S12>/UpperPotentiometerLimit1'
-       *  Gain: '<S12>/Gain'
-       *  Inport: '<Root>/DI_V_AccelPedalPos2'
-       *  Product: '<S18>/Divide'
-       *  Sum: '<S18>/Subtract'
+    } else if ((controller_U.DI_V_AccelPedalPos1 < 0) ||
+               (controller_U.DI_V_AccelPedalPos1 > 4095)) {
+      /* Outputs for IfAction SubSystem: '<S2>/If Action Subsystem2' incorporates:
+       *  ActionPort: '<S10>/Action Port'
        */
-      rtb_Switch2 = (controller_U.DI_V_AccelPedalPos2 - 1024.0F) / 1024.0F *
-        100.0F;
+      /* If: '<S2>/If' incorporates:
+       *  SignalConversion generated from: '<S10>/In1'
+       */
+      a = controller_ConstB.Gain;
+
+      /* End of Outputs for SubSystem: '<S2>/If Action Subsystem2' */
     } else {
       /* If: '<S2>/If' incorporates:
-       *  Constant: '<S11>/UpperPotentiometerLimit1'
-       *  Gain: '<S11>/Gain'
+       *  DataTypeConversion: '<S11>/Data Type Conversion1'
+       *  Gain: '<S16>/Gain'
        *  Inport: '<Root>/DI_V_AccelPedalPos1'
        *  Product: '<S16>/Divide'
-       *  Sum: '<S16>/Subtract'
+       *  Sum: '<S16>/Subtract1'
        */
-      rtb_Switch2 = (controller_U.DI_V_AccelPedalPos1 - 1024.0F) / 1024.0F *
+      a = ((real32_T)controller_U.DI_V_AccelPedalPos1 -
+           controller_ConstB.DataTypeConversion2_p) / controller_ConstB.range_p *
         100.0F;
     }
 
-    rtb_Switch2 = look1_iflf_binlxpw(rtb_Switch2, controller_ConstP.pooled3,
-      controller_ConstP.pooled3, 20U) * fminf(rtb_TorqueLimit, rtb_TorqueLimit);
+    rtb_TorqueLimit = 0.01F * look1_iflf_binlcpw(a, controller_ConstP.pooled2,
+      controller_ConstP.pooled2, 20U) * fminf(rtb_TorqueLimit, rtb_TorqueLimit);
   }
 
   /* End of Switch: '<S5>/Switch' */
 
   /* Chart: '<S4>/RIGHT_MOTOR' incorporates:
-   *  Constant: '<S5>/NegTorqueLimit'
    *  Inport: '<Root>/AMK_bDcOn'
    *  Inport: '<Root>/AMK_bError'
    *  Inport: '<Root>/AMK_bInverterOn'
@@ -491,7 +468,7 @@ void controller_step(void)
    *  Inport: '<Root>/AMK_bQuitInverterOn'
    *  Inport: '<Root>/AMK_bSystemReady'
    */
-  if (controller_DW.temporalCounter_i1 < 7U) {
+  if (controller_DW.temporalCounter_i1 < 127U) {
     controller_DW.temporalCounter_i1++;
   }
 
@@ -513,9 +490,13 @@ void controller_step(void)
     controller_Y.AMK_bErrorReset = 0U;
 
     /* Outport: '<Root>/AMK_TargetVelocity' */
-    controller_Y.AMK_TargetVelocity = 0.0F;
-    controller_B.AMK_TorqueLimitPositiv = 0.0F;
-    controller_B.AMK_TorqueLimitNegativ = 0.0F;
+    controller_Y.AMK_TargetVelocity = 0;
+
+    /* Outport: '<Root>/AMK_TorqueLimitPositiv' */
+    controller_Y.AMK_TorqueLimitPositiv = 0;
+
+    /* Outport: '<Root>/AMK_TorqueLimitNegativ' */
+    controller_Y.AMK_TorqueLimitNegativ = 0;
   } else {
     switch (controller_DW.is_c3_motor_interface_lib) {
      case controller_IN_AMK_errorDetected:
@@ -524,9 +505,13 @@ void controller_step(void)
         controller_DW.is_AMK_errorReset = contr_IN_enforceSetpointsZero_p;
 
         /* Outport: '<Root>/AMK_TargetVelocity' */
-        controller_Y.AMK_TargetVelocity = 0.0F;
-        controller_B.AMK_TorqueLimitPositiv = 0.0F;
-        controller_B.AMK_TorqueLimitNegativ = 0.0F;
+        controller_Y.AMK_TargetVelocity = 0;
+
+        /* Outport: '<Root>/AMK_TorqueLimitPositiv' */
+        controller_Y.AMK_TorqueLimitPositiv = 0;
+
+        /* Outport: '<Root>/AMK_TorqueLimitNegativ' */
+        controller_Y.AMK_TorqueLimitNegativ = 0;
 
         /* Outport: '<Root>/AMK_bInverterOn_tx' */
         controller_Y.AMK_bInverterOn_tx = 0U;
@@ -550,7 +535,7 @@ void controller_step(void)
        case controller_IN_sendReset:
         /* Outport: '<Root>/AMK_bErrorReset' */
         controller_Y.AMK_bErrorReset = 1U;
-        if (controller_DW.temporalCounter_i1 >= 3U) {
+        if (controller_DW.temporalCounter_i1 >= 50U) {
           controller_DW.is_AMK_errorReset = controller_IN_toggleReset;
 
           /* Outport: '<Root>/AMK_bErrorReset' */
@@ -561,7 +546,7 @@ void controller_step(void)
        case controller_IN_toggleEnable:
         /* Outport: '<Root>/AMK_bEnable' */
         controller_Y.AMK_bEnable = 0U;
-        if (controller_DW.temporalCounter_i1 >= 3U) {
+        if (controller_DW.temporalCounter_i1 >= 50U) {
           controller_DW.is_AMK_errorReset = controller_IN_sendReset;
           controller_DW.temporalCounter_i1 = 0U;
 
@@ -590,9 +575,13 @@ void controller_step(void)
           controller_Y.AMK_bEnable = 0U;
 
           /* Outport: '<Root>/AMK_TargetVelocity' */
-          controller_Y.AMK_TargetVelocity = 0.0F;
-          controller_B.AMK_TorqueLimitPositiv = 0.0F;
-          controller_B.AMK_TorqueLimitNegativ = 0.0F;
+          controller_Y.AMK_TargetVelocity = 0;
+
+          /* Outport: '<Root>/AMK_TorqueLimitPositiv' */
+          controller_Y.AMK_TorqueLimitPositiv = 0;
+
+          /* Outport: '<Root>/AMK_TorqueLimitNegativ' */
+          controller_Y.AMK_TorqueLimitNegativ = 0;
         }
         break;
       }
@@ -609,21 +598,42 @@ void controller_step(void)
         controller_B.MI_motorStatus = SHUTDOWN;
 
         /* Outport: '<Root>/AMK_TargetVelocity' */
-        controller_Y.AMK_TargetVelocity = 0.0F;
-        controller_B.AMK_TorqueLimitPositiv = 0.0F;
-        controller_B.AMK_TorqueLimitNegativ = 0.0F;
+        controller_Y.AMK_TargetVelocity = 0;
+
+        /* Outport: '<Root>/AMK_TorqueLimitPositiv' */
+        controller_Y.AMK_TorqueLimitPositiv = 0;
+
+        /* Outport: '<Root>/AMK_TorqueLimitNegativ' */
+        controller_Y.AMK_TorqueLimitNegativ = 0;
 
         /* Outport: '<Root>/AMK_bInverterOn_tx' */
         controller_Y.AMK_bInverterOn_tx = 0U;
       } else {
         controller_B.MI_motorStatus = RUNNING;
 
-        /* Outport: '<Root>/AMK_TargetVelocity' incorporates:
-         *  Constant: '<S5>/MaxAMKspeed'
+        /* Outport: '<Root>/AMK_TargetVelocity' */
+        controller_Y.AMK_TargetVelocity =
+          controller_ConstB.DataTypeConversion2_d;
+
+        /* DataTypeConversion: '<S4>/Data Type Conversion' incorporates:
+         *  Gain: '<S4>/Gain2'
          */
-        controller_Y.AMK_TargetVelocity = 20000.0F;
-        controller_B.AMK_TorqueLimitPositiv = rtb_Switch2;
-        controller_B.AMK_TorqueLimitNegativ = 0.0F;
+        a = floorf(1000.0F * rtb_TorqueLimit);
+        if (rtIsNaNF(a) || rtIsInfF(a)) {
+          a = 0.0F;
+        } else {
+          a = fmodf(a, 65536.0F);
+        }
+
+        /* Outport: '<Root>/AMK_TorqueLimitPositiv' incorporates:
+         *  DataTypeConversion: '<S4>/Data Type Conversion'
+         */
+        controller_Y.AMK_TorqueLimitPositiv = (int16_T)(a < 0.0F ? (int32_T)
+          (int16_T)-(int16_T)(uint16_T)-a : (int32_T)(int16_T)(uint16_T)a);
+
+        /* Outport: '<Root>/AMK_TorqueLimitNegativ' */
+        controller_Y.AMK_TorqueLimitNegativ =
+          controller_ConstB.DataTypeConversion1_l;
       }
       break;
 
@@ -681,9 +691,13 @@ void controller_step(void)
           controller_Y.AMK_bErrorReset = 0U;
 
           /* Outport: '<Root>/AMK_TargetVelocity' */
-          controller_Y.AMK_TargetVelocity = 0.0F;
-          controller_B.AMK_TorqueLimitPositiv = 0.0F;
-          controller_B.AMK_TorqueLimitNegativ = 0.0F;
+          controller_Y.AMK_TargetVelocity = 0;
+
+          /* Outport: '<Root>/AMK_TorqueLimitPositiv' */
+          controller_Y.AMK_TorqueLimitPositiv = 0;
+
+          /* Outport: '<Root>/AMK_TorqueLimitNegativ' */
+          controller_Y.AMK_TorqueLimitNegativ = 0;
         } else if (controller_U.AMK_bError) {
           controller_DW.is_AMK_shutdown = controller_IN_NO_ACTIVE_CHILD;
           controller_DW.is_c3_motor_interface_lib =
@@ -714,7 +728,7 @@ void controller_step(void)
         break;
 
        case control_IN_enforceSetpointsZero:
-        if (controller_DW.temporalCounter_i1 >= 5U) {
+        if (controller_DW.temporalCounter_i1 >= 100U) {
           controller_DW.is_AMK_startup = controller_IN_commandOn;
 
           /* Outport: '<Root>/AMK_bEnable' */
@@ -738,9 +752,13 @@ void controller_step(void)
           controller_DW.temporalCounter_i1 = 0U;
 
           /* Outport: '<Root>/AMK_TargetVelocity' */
-          controller_Y.AMK_TargetVelocity = 0.0F;
-          controller_B.AMK_TorqueLimitPositiv = 0.0F;
-          controller_B.AMK_TorqueLimitNegativ = 0.0F;
+          controller_Y.AMK_TargetVelocity = 0;
+
+          /* Outport: '<Root>/AMK_TorqueLimitPositiv' */
+          controller_Y.AMK_TorqueLimitPositiv = 0;
+
+          /* Outport: '<Root>/AMK_TorqueLimitNegativ' */
+          controller_Y.AMK_TorqueLimitNegativ = 0;
         } else if (controller_U.AMK_bError) {
           controller_DW.is_AMK_startup = controller_IN_NO_ACTIVE_CHILD;
           controller_DW.is_c3_motor_interface_lib =
@@ -790,25 +808,13 @@ void controller_step(void)
 
   /* End of Chart: '<S4>/RIGHT_MOTOR' */
 
-  /* Outport: '<Root>/AMK_TorqueLimitPositiv' incorporates:
-   *  Gain: '<S4>/Gain'
-   */
-  controller_Y.AMK_TorqueLimitPositiv = 1000.0F *
-    controller_B.AMK_TorqueLimitPositiv;
-
-  /* Outport: '<Root>/AMK_TorqueLimitNegativ' incorporates:
-   *  Gain: '<S4>/Gain1'
-   */
-  controller_Y.AMK_TorqueLimitNegativ = 1000.0F *
-    controller_B.AMK_TorqueLimitNegativ;
-
   /* Chart: '<S1>/Chart' incorporates:
    *  Delay: '<S3>/Delay'
    *  Inport: '<Root>/BM_b_HVnegContactorSts'
    *  Inport: '<Root>/BM_b_HVposContactorSts'
    *  Inport: '<Root>/BM_b_prechrgContactorSts'
    */
-  if (controller_DW.temporalCounter_i1_p < 7U) {
+  if (controller_DW.temporalCounter_i1_p < 127U) {
     controller_DW.temporalCounter_i1_p++;
   }
 
@@ -847,53 +853,57 @@ void controller_step(void)
       break;
 
      case controller_IN_InitialState:
-      controller_DW.Delay_DSTATE_f = BM_INIT;
-      if ((controller_U.BM_b_prechrgContactorSts == 0.0) &&
-          (controller_U.BM_b_HVnegContactorSts == 0.0) &&
-          (controller_U.BM_b_HVposContactorSts == 0.0)) {
-        controller_DW.is_c3_battery_monitor_lib = controller_IN_StartupState1;
-        controller_DW.Delay_DSTATE_f = BM_IDLE;
-      } else if ((controller_U.BM_b_prechrgContactorSts == 1.0) &&
-                 (controller_U.BM_b_HVnegContactorSts == 0.0) &&
-                 (controller_U.BM_b_HVposContactorSts == 0.0)) {
-        controller_DW.is_c3_battery_monitor_lib =
-          co_IN_ErrorPrechargeClosedState;
-        controller_DW.Delay_DSTATE_f = ERR_PRECHARGE_CLOSED;
-      } else if ((controller_U.BM_b_prechrgContactorSts == 1.0) &&
-                 (controller_U.BM_b_HVnegContactorSts == 1.0) &&
-                 (controller_U.BM_b_HVposContactorSts == 1.0)) {
-        controller_DW.is_c3_battery_monitor_lib =
-          controll_IN_ErrorAllClosedState;
-        controller_DW.Delay_DSTATE_f = ERR_ALL_CLOSED;
-      } else if ((controller_U.BM_b_prechrgContactorSts == 0.0) &&
-                 (controller_U.BM_b_HVnegContactorSts == 0.0) &&
-                 (controller_U.BM_b_HVposContactorSts == 1.0)) {
-        controller_DW.is_c3_battery_monitor_lib = controller_IN_ErrorHVPositive;
-        controller_DW.Delay_DSTATE_f = ERR_HV_POSITIVE;
-      } else if ((controller_U.BM_b_prechrgContactorSts == 1.0) &&
-                 (controller_U.BM_b_HVnegContactorSts == 1.0) &&
-                 (controller_U.BM_b_HVposContactorSts == 0.0)) {
-        controller_DW.is_c3_battery_monitor_lib = controller_IN_PrechargeState;
-        controller_DW.temporalCounter_i1_p = 0U;
-        controller_DW.Delay_DSTATE_f = PRECHARGE;
-      } else if ((controller_U.BM_b_prechrgContactorSts == 0.0) &&
-                 (controller_U.BM_b_HVnegContactorSts == 1.0) &&
-                 (controller_U.BM_b_HVposContactorSts == 1.0)) {
-        controller_DW.is_c3_battery_monitor_lib = controller_IN_RunningState;
-        controller_DW.temporalCounter_i1_p = 0U;
-        controller_DW.Delay_DSTATE_f = BM_RUNNING;
+      {
+        boolean_T tmp_0;
+        boolean_T tmp_1;
+        boolean_T tmp_2;
+        controller_DW.Delay_DSTATE_f = BM_INIT;
+        tmp_0 = !controller_U.BM_b_HVnegContactorSts;
+        tmp_1 = !controller_U.BM_b_HVposContactorSts;
+        tmp_2 = ((!controller_U.BM_b_prechrgContactorSts) && tmp_0);
+        if (tmp_2 && tmp_1) {
+          controller_DW.is_c3_battery_monitor_lib = controller_IN_StartupState1;
+          controller_DW.Delay_DSTATE_f = BM_IDLE;
+        } else if (controller_U.BM_b_prechrgContactorSts && tmp_0 && tmp_1) {
+          controller_DW.is_c3_battery_monitor_lib =
+            co_IN_ErrorPrechargeClosedState;
+          controller_DW.Delay_DSTATE_f = ERR_PRECHARGE_CLOSED;
+        } else {
+          tmp_0 = (controller_U.BM_b_prechrgContactorSts &&
+                   controller_U.BM_b_HVnegContactorSts);
+          if (tmp_0 && controller_U.BM_b_HVposContactorSts) {
+            controller_DW.is_c3_battery_monitor_lib =
+              controll_IN_ErrorAllClosedState;
+            controller_DW.Delay_DSTATE_f = ERR_ALL_CLOSED;
+          } else if (tmp_2 && controller_U.BM_b_HVposContactorSts) {
+            controller_DW.is_c3_battery_monitor_lib =
+              controller_IN_ErrorHVPositive;
+            controller_DW.Delay_DSTATE_f = ERR_HV_POSITIVE;
+          } else if (tmp_0 && tmp_1) {
+            controller_DW.is_c3_battery_monitor_lib =
+              controller_IN_PrechargeState;
+            controller_DW.temporalCounter_i1_p = 0U;
+            controller_DW.Delay_DSTATE_f = PRECHARGE;
+          } else if ((!controller_U.BM_b_prechrgContactorSts) &&
+                     controller_U.BM_b_HVnegContactorSts &&
+                     controller_U.BM_b_HVposContactorSts) {
+            controller_DW.is_c3_battery_monitor_lib = controller_IN_RunningState;
+            controller_DW.temporalCounter_i1_p = 0U;
+            controller_DW.Delay_DSTATE_f = BM_RUNNING;
+          }
+        }
       }
       break;
 
      case con_IN_InitializePrechargeState:
       controller_DW.Delay_DSTATE_f = INIT_PRECHARGE;
-      if ((controller_U.BM_b_prechrgContactorSts == 1.0) &&
-          (controller_U.BM_b_HVnegContactorSts == 1.0) &&
-          (controller_U.BM_b_HVposContactorSts == 1.0)) {
+      if (controller_U.BM_b_prechrgContactorSts &&
+          controller_U.BM_b_HVnegContactorSts &&
+          controller_U.BM_b_HVposContactorSts) {
         controller_DW.is_c3_battery_monitor_lib = controller_IN_PrechargeState;
         controller_DW.temporalCounter_i1_p = 0U;
         controller_DW.Delay_DSTATE_f = PRECHARGE;
-      } else if (controller_DW.temporalCounter_i1_p >= 5U) {
+      } else if (controller_DW.temporalCounter_i1_p >= 100U) {
         controller_DW.is_c3_battery_monitor_lib =
           IN_ErrorInitializePrechargeStat;
         controller_DW.Delay_DSTATE_f = ERR_INIT_PRECHARGE;
@@ -902,13 +912,13 @@ void controller_step(void)
 
      case controller_IN_PrechargeState:
       controller_DW.Delay_DSTATE_f = PRECHARGE;
-      if ((controller_U.BM_b_prechrgContactorSts == 0.0) &&
-          (controller_U.BM_b_HVnegContactorSts == 1.0) &&
-          (controller_U.BM_b_HVposContactorSts == 1.0)) {
+      if ((!controller_U.BM_b_prechrgContactorSts) &&
+          controller_U.BM_b_HVnegContactorSts &&
+          controller_U.BM_b_HVposContactorSts) {
         controller_DW.is_c3_battery_monitor_lib = controller_IN_RunningState;
         controller_DW.temporalCounter_i1_p = 0U;
         controller_DW.Delay_DSTATE_f = BM_RUNNING;
-      } else if (controller_DW.temporalCounter_i1_p >= 5U) {
+      } else if (controller_DW.temporalCounter_i1_p >= 100U) {
         controller_DW.is_c3_battery_monitor_lib =
           controll_IN_ErrorPrechargeState;
         controller_DW.Delay_DSTATE_f = ERR_PRECHARGE;
@@ -917,13 +927,13 @@ void controller_step(void)
 
      case controller_IN_RunningState:
       controller_DW.Delay_DSTATE_f = BM_RUNNING;
-      if ((controller_U.BM_b_prechrgContactorSts == 0.0) &&
-          (controller_U.BM_b_HVnegContactorSts == 1.0) &&
-          (controller_U.BM_b_HVposContactorSts == 1.0)) {
+      if ((!controller_U.BM_b_prechrgContactorSts) &&
+          controller_U.BM_b_HVnegContactorSts &&
+          controller_U.BM_b_HVposContactorSts) {
         controller_DW.is_c3_battery_monitor_lib = controller_IN_RunningState;
         controller_DW.temporalCounter_i1_p = 0U;
         controller_DW.Delay_DSTATE_f = BM_RUNNING;
-      } else if (controller_DW.temporalCounter_i1_p >= 5U) {
+      } else if (controller_DW.temporalCounter_i1_p >= 100U) {
         controller_DW.is_c3_battery_monitor_lib =
           controller_IN_ErrorRunningState;
         controller_DW.Delay_DSTATE_f = ERR_RUNNING;
@@ -932,14 +942,14 @@ void controller_step(void)
 
      case controller_IN_StartupState:
       controller_DW.Delay_DSTATE_f = BM_STARTUP;
-      if ((controller_U.BM_b_prechrgContactorSts == 1.0) &&
-          (controller_U.BM_b_HVnegContactorSts == 1.0) &&
-          (controller_U.BM_b_HVposContactorSts == 0.0)) {
+      if (controller_U.BM_b_prechrgContactorSts &&
+          controller_U.BM_b_HVnegContactorSts &&
+          (!controller_U.BM_b_HVposContactorSts)) {
         controller_DW.is_c3_battery_monitor_lib =
           con_IN_InitializePrechargeState;
         controller_DW.temporalCounter_i1_p = 0U;
         controller_DW.Delay_DSTATE_f = INIT_PRECHARGE;
-      } else if (controller_DW.temporalCounter_i1_p >= 5U) {
+      } else if (controller_DW.temporalCounter_i1_p >= 100U) {
         controller_DW.is_c3_battery_monitor_lib =
           controller_IN_ErrorStartupState;
         controller_DW.Delay_DSTATE_f = ERR_STARTUP;
@@ -949,9 +959,9 @@ void controller_step(void)
      default:
       /* case IN_StartupState1: */
       controller_DW.Delay_DSTATE_f = BM_IDLE;
-      if ((controller_U.BM_b_prechrgContactorSts == 0.0) &&
-          (controller_U.BM_b_HVnegContactorSts == 1.0) &&
-          (controller_U.BM_b_HVposContactorSts == 0.0)) {
+      if ((!controller_U.BM_b_prechrgContactorSts) &&
+          controller_U.BM_b_HVnegContactorSts &&
+          (!controller_U.BM_b_HVposContactorSts)) {
         controller_DW.is_c3_battery_monitor_lib = controller_IN_StartupState;
         controller_DW.temporalCounter_i1_p = 0U;
         controller_DW.Delay_DSTATE_f = BM_STARTUP;
@@ -981,7 +991,10 @@ void controller_step(void)
 /* Model initialize function */
 void controller_initialize(void)
 {
-  /* (no initialization code required) */
+  /* Registration code */
+
+  /* initialize non-finites */
+  rt_InitInfAndNaN(sizeof(real_T));
 }
 
 /* Model terminate function */

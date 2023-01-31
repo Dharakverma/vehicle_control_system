@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'controller'.
  *
- * Model version                  : 1.9
+ * Model version                  : 1.15
  * Simulink Coder version         : 9.8 (R2022b) 13-May-2022
- * C/C++ source code generated on : Sat Jan 28 16:12:49 2023
+ * C/C++ source code generated on : Tue Jan 31 00:31:24 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -25,6 +25,8 @@
 #endif                                 /* controller_COMMON_INCLUDES_ */
 
 #include "controller_types.h"
+#include "rtGetInf.h"
+#include "rt_nonfinite.h"
 
 /* Macros for accessing real-time model data structure */
 #ifndef rtmGetErrorStatus
@@ -37,8 +39,6 @@
 
 /* Block signals (default storage) */
 typedef struct {
-  real32_T AMK_TorqueLimitPositiv;     /* '<S4>/RIGHT_MOTOR' */
-  real32_T AMK_TorqueLimitNegativ;     /* '<S4>/RIGHT_MOTOR' */
   MI_STATUSES MI_motorStatus;          /* '<S4>/RIGHT_MOTOR' */
   MI_CMD GOV_e_miCmd;                  /* '<S3>/Chart' */
   DI_CMD GOV_e_diCmd;                  /* '<S3>/Chart' */
@@ -74,7 +74,32 @@ typedef struct {
 
 /* Invariant block signals (default storage) */
 typedef struct {
+  const real32_T DataTypeConversion1;  /* '<S12>/Data Type Conversion1' */
+  const real32_T DataTypeConversion2;  /* '<S12>/Data Type Conversion2' */
+  const real32_T Subtract1;            /* '<S18>/Subtract1' */
+  const real32_T DataTypeConversion;   /* '<S12>/Data Type Conversion' */
+  const real32_T range;                /* '<S18>/Subtract' */
+  const real32_T Divide;               /* '<S18>/Divide' */
+  const real32_T Gain;                 /* '<S18>/Gain' */
+  const real32_T DataTypeConversion_f; /* '<S11>/Data Type Conversion' */
+  const real32_T DataTypeConversion2_p;/* '<S11>/Data Type Conversion2' */
+  const real32_T range_p;              /* '<S16>/Subtract' */
+  const real32_T DataTypeConversion1_p;/* '<S13>/Data Type Conversion1' */
+  const real32_T DataTypeConversion2_l;/* '<S13>/Data Type Conversion2' */
+  const real32_T Subtract1_e;          /* '<S20>/Subtract1' */
+  const real32_T DataTypeConversion_b; /* '<S13>/Data Type Conversion' */
+  const real32_T range_o;              /* '<S20>/Subtract' */
+  const real32_T Divide_h;             /* '<S20>/Divide' */
+  const real32_T Gain_c;               /* '<S20>/Gain' */
+  const real32_T Switch2;              /* '<S2>/Switch2' */
+  const real32_T Gain3;                /* '<S4>/Gain3' */
   const real32_T Gain1;                /* '<S5>/Gain1' */
+  const int16_T DataTypeConversion1_l; /* '<S4>/Data Type Conversion1' */
+  const int16_T DataTypeConversion2_d; /* '<S4>/Data Type Conversion2' */
+  const boolean_T LowerTest;           /* '<S19>/Lower Test' */
+  const boolean_T UpperTest;           /* '<S19>/Upper Test' */
+  const boolean_T FixPtLogicalOperator;/* '<S19>/FixPt Logical Operator' */
+  const boolean_T NOT;                 /* '<S13>/NOT' */
 } ConstB_controller_T;
 
 /* Constant parameters (default storage) */
@@ -82,20 +107,20 @@ typedef struct {
   /* Pooled Parameter (Expression: [0 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100])
    * Referenced by: '<S2>/AccelPedalPos1 LUT'
    */
-  real32_T pooled3[21];
+  real32_T pooled2[21];
 } ConstP_controller_T;
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
   boolean_T AMK_bReserve;              /* '<Root>/AMK_bReserve' */
-  real32_T DI_V_SteeringAngle;         /* '<Root>/DI_V_SteeringAngle' */
-  real32_T DI_V_BrakePedalPos;         /* '<Root>/DI_V_BrakePedalPos' */
-  real_T DI_b_DriverButton;            /* '<Root>/DI_b_DriverButton' */
-  real32_T DI_V_AccelPedalPos1;        /* '<Root>/DI_V_AccelPedalPos1' */
-  real32_T DI_V_AccelPedalPos2;        /* '<Root>/DI_V_AccelPedalPos2' */
-  real_T BM_b_prechrgContactorSts;     /* '<Root>/BM_b_prechrgContactorSts' */
-  real_T BM_b_HVposContactorSts;       /* '<Root>/BM_b_HVposContactorSts' */
-  real_T BM_b_HVnegContactorSts;       /* '<Root>/BM_b_HVnegContactorSts' */
+  int16_T DI_V_SteeringAngle;          /* '<Root>/DI_V_SteeringAngle' */
+  int16_T DI_V_BrakePedalPos;          /* '<Root>/DI_V_BrakePedalPos' */
+  boolean_T DI_b_DriverButton;         /* '<Root>/DI_b_DriverButton' */
+  int16_T DI_V_AccelPedalPos1;         /* '<Root>/DI_V_AccelPedalPos1' */
+  int16_T DI_V_AccelPedalPos2;         /* '<Root>/DI_V_AccelPedalPos2' */
+  boolean_T BM_b_prechrgContactorSts;  /* '<Root>/BM_b_prechrgContactorSts' */
+  boolean_T BM_b_HVposContactorSts;    /* '<Root>/BM_b_HVposContactorSts' */
+  boolean_T BM_b_HVnegContactorSts;    /* '<Root>/BM_b_HVnegContactorSts' */
   boolean_T AMK_bSystemReady;          /* '<Root>/AMK_bSystemReady' */
   boolean_T AMK_bError;                /* '<Root>/AMK_bError' */
   boolean_T AMK_bWarn;                 /* '<Root>/AMK_bWarn' */
@@ -121,9 +146,9 @@ typedef struct {
   uint8_T AMK_bDcOn_tx;                /* '<Root>/AMK_bDcOn_tx' */
   uint8_T AMK_bEnable;                 /* '<Root>/AMK_bEnable' */
   uint8_T AMK_bErrorReset;             /* '<Root>/AMK_bErrorReset' */
-  real32_T AMK_TargetVelocity;         /* '<Root>/AMK_TargetVelocity' */
-  real32_T AMK_TorqueLimitPositiv;     /* '<Root>/AMK_TorqueLimitPositiv' */
-  real32_T AMK_TorqueLimitNegativ;     /* '<Root>/AMK_TorqueLimitNegativ' */
+  int16_T AMK_TargetVelocity;          /* '<Root>/AMK_TargetVelocity' */
+  int16_T AMK_TorqueLimitPositiv;      /* '<Root>/AMK_TorqueLimitPositiv' */
+  int16_T AMK_TorqueLimitNegativ;      /* '<Root>/AMK_TorqueLimitNegativ' */
 } ExtY_controller_T;
 
 /* Real-time Model Data Structure */
@@ -151,12 +176,10 @@ extern const ConstP_controller_T controller_ConstP;
 extern void controller_initialize(void);
 extern void controller_step(void);
 extern void controller_terminate(void);
+void rt_OneStep(void);
 
 /* Real-time Model object */
 extern RT_MODEL_controller_T *const controller_M;
-
-// Declare rt_OneStep for usage in main.c
-void rt_OneStep(void);
 
 /*-
  * These blocks were eliminated from the model due to optimizations:
@@ -165,24 +188,30 @@ void rt_OneStep(void);
  * Block '<Root>/Constant2' : Unused code path elimination
  * Block '<S2>/AND' : Unused code path elimination
  * Block '<S2>/Constant2' : Unused code path elimination
+ * Block '<S2>/Constant6' : Unused code path elimination
  * Block '<S2>/OR' : Unused code path elimination
  * Block '<S2>/Switch1' : Unused code path elimination
  * Block '<S15>/FixPt Data Type Duplicate' : Unused code path elimination
- * Block '<S15>/FixPt Logical Operator' : Unused code path elimination
- * Block '<S15>/Lower Test' : Unused code path elimination
- * Block '<S15>/Upper Test' : Unused code path elimination
- * Block '<S11>/LowerPotentiometerLimit1' : Unused code path elimination
  * Block '<S17>/FixPt Data Type Duplicate' : Unused code path elimination
+ * Block '<S17>/FixPt Logical Operator' : Unused code path elimination
+ * Block '<S17>/Lower Test' : Unused code path elimination
+ * Block '<S17>/Upper Test' : Unused code path elimination
+ * Block '<S12>/NOT' : Unused code path elimination
  * Block '<S19>/FixPt Data Type Duplicate' : Unused code path elimination
- * Block '<S14>/Gain' : Unused code path elimination
+ * Block '<S14>/Data Type Conversion' : Unused code path elimination
+ * Block '<S14>/Data Type Conversion1' : Unused code path elimination
+ * Block '<S14>/Data Type Conversion2' : Unused code path elimination
  * Block '<S21>/FixPt Data Type Duplicate' : Unused code path elimination
  * Block '<S21>/FixPt Logical Operator' : Unused code path elimination
  * Block '<S21>/Lower Test' : Unused code path elimination
  * Block '<S21>/Upper Test' : Unused code path elimination
  * Block '<S14>/LowerPotentiometerLimit1' : Unused code path elimination
+ * Block '<S14>/NOT' : Unused code path elimination
  * Block '<S14>/UpperPotentiometerLimit1' : Unused code path elimination
  * Block '<S22>/Divide' : Unused code path elimination
+ * Block '<S22>/Gain' : Unused code path elimination
  * Block '<S22>/Subtract' : Unused code path elimination
+ * Block '<S22>/Subtract1' : Unused code path elimination
  * Block '<S5>/MaxAMKspeed1' : Unused code path elimination
  * Block '<S5>/MaxBatteryCurrent1' : Unused code path elimination
  * Block '<S5>/MaxBatteryCurrent2' : Unused code path elimination

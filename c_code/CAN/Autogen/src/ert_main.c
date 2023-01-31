@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'controller'.
  *
- * Model version                  : 1.9
+ * Model version                  : 1.15
  * Simulink Coder version         : 9.8 (R2022b) 13-May-2022
- * C/C++ source code generated on : Sat Jan 28 16:12:49 2023
+ * C/C++ source code generated on : Tue Jan 31 00:31:24 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -32,7 +32,8 @@
  * your application needs.  This example simply sets an error status in the
  * real-time model and returns from rt_OneStep.
  */
-void rt_OneStep(void) {
+void rt_OneStep(void)
+{
   static boolean_T OverrunFlag = false;
 
   /* Disable interrupts here */

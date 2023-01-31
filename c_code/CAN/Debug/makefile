@@ -62,8 +62,8 @@ all: main-build
 main-build: CAN.elf secondary-outputs
 
 # Tool invocations
-CAN.elf CAN.map: $(OBJS) $(USER_OBJS) /Users/abhishekmagdum/Downloads/Formula/git/vehicle_control_system/c_code/CAN/STM32F767ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "CAN.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"/Users/abhishekmagdum/Downloads/Formula/git/vehicle_control_system/c_code/CAN/STM32F767ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
+CAN.elf CAN.map: $(OBJS) $(USER_OBJS) /Users/dharakverma/Documents/Capstone/vehicle_control_system/c_code/CAN/STM32F767ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "CAN.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"/Users/dharakverma/Documents/Capstone/vehicle_control_system/c_code/CAN/STM32F767ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
