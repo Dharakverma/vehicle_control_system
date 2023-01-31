@@ -113,8 +113,6 @@ int main(void)
 
 	/* USER CODE BEGIN Init */
 
-	TIM_HandleTypeDef htime2;
-
 	/* USER CODE END Init */
 
 	/* Configure the system clock */
@@ -134,7 +132,7 @@ int main(void)
 
 	/* USER CODE BEGIN 2 */
 	// Start 0.2s timer interrupt
-	HAL_TIM_Base_Start_IT(&htime2);
+	HAL_TIM_Base_Start_IT(&htim2);
 
 	UART_st uart3 = {
 		.huart = &huart3,
@@ -483,9 +481,10 @@ static void MX_TIM2_Init(void)
 }
 
 // Callback function for 0.2ms time based IRQ to run control system
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)
 {
 	rt_OneStep();
+	HAL_GPIO_TogglePin(GPIOB, LD3_Pin);
 }
 
 /**
@@ -584,7 +583,6 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 		Error_Handler();
 	}
 
-	HAL_GPIO_TogglePin(GPIOB, LD2_Pin);
 	//	IncomingCANMessageHandler(&RxHeader.StdId, RxData);
 }
 /* USER CODE END 4 */
@@ -600,6 +598,7 @@ void Error_Handler(void)
 	__disable_irq();
 	while (1)
 	{
+		HAL_GPIO_TogglePin(GPIOB, LD2_Pin);
 	}
 	/* USER CODE END Error_Handler_Debug */
 }
