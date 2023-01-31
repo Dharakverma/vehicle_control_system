@@ -2,8 +2,8 @@
 ## Makefile generated for component 'controller'. 
 ## 
 ## Makefile     : controller.mk
-## Generated on : Mon Jan 30 22:35:45 2023
-## Final product: $(RELATIVE_PATH_TO_ANCHOR)/controller.exe
+## Generated on : Tue Jan 31 17:09:41 2023
+## Final product: $(RELATIVE_PATH_TO_ANCHOR)/controller
 ## Product type : executable
 ## 
 ###########################################################################
@@ -15,45 +15,47 @@
 # Macro Descriptions:
 # PRODUCT_NAME            Name of the system to build
 # MAKEFILE                Name of this makefile
-# CMD_FILE                Command file
 
 PRODUCT_NAME              = controller
 MAKEFILE                  = controller.mk
-MATLAB_ROOT               = C:/PROGRA~1/MATLAB/R2022b
-MATLAB_BIN                = C:/PROGRA~1/MATLAB/R2022b/bin
-MATLAB_ARCH_BIN           = $(MATLAB_BIN)/win64
-START_DIR                 = C:/Users/dr_pa/git/school/vehicle_control_system/src
+MATLAB_ROOT               = /Applications/MATLAB_R2022b.app
+MATLAB_BIN                = /Applications/MATLAB_R2022b.app/bin
+MATLAB_ARCH_BIN           = $(MATLAB_BIN)/maci64
+START_DIR                 = /Users/dharakverma/Documents/Capstone/vehicle_control_system/src
 SOLVER                    = 
 SOLVER_OBJ                = 
 CLASSIC_INTERFACE         = 0
 TGT_FCN_LIB               = ISO_C
 MODEL_HAS_DYNAMICALLY_LOADED_SFCNS = 0
 RELATIVE_PATH_TO_ANCHOR   = ..
-CMD_FILE                  = controller.rsp
-C_STANDARD_OPTS           = 
-CPP_STANDARD_OPTS         = 
+C_STANDARD_OPTS           = -fno-common -fexceptions
+CPP_STANDARD_OPTS         = -std=c++14 -fno-common -fexceptions
 
 ###########################################################################
 ## TOOLCHAIN SPECIFICATIONS
 ###########################################################################
 
-# Toolchain Name:          LCC-win64 v2.4.1 | gmake (64-bit Windows)
-# Supported Version(s):    2.4.1
+# Toolchain Name:          Xcode with Clang | gmake (64-bit Mac)
+# Supported Version(s):    
 # ToolchainInfo Version:   2022b
 # Specification Revision:  1.0
 # 
+#-------------------------------------------
+# Macros assumed to be defined elsewhere
+#-------------------------------------------
+
+# C_STANDARD_OPTS
+# CPP_STANDARD_OPTS
 
 #-----------
 # MACROS
 #-----------
 
-SHELL              = cmd
-LCC_ROOT           = $(MATLAB_ROOT)/sys/lcc64/lcc64
-LCC_BUILDLIB       = $(LCC_ROOT)/bin/buildlib
-LCC_LIB            = $(LCC_ROOT)/lib64
-MW_EXTERNLIB_DIR   = $(MATLAB_ROOT)/extern/lib/win64/microsoft
-MW_LIB_DIR         = $(MATLAB_ROOT)/lib/win64
-TOOLCHAIN_INCLUDES = -I$(LCC_ROOT)/include64
+ARCHS             = x86_64
+XCODE_SDK_VER     = $(shell perl $(MATLAB_ROOT)/rtw/c/tools/macsdkver.pl)
+XCODE_SDK         = MacOSX$(XCODE_SDK_VER).sdk
+XCODE_DEVEL_DIR   = $(shell xcode-select -print-path)
+XCODE_SDK_ROOT    = $(XCODE_DEVEL_DIR)/Platforms/MacOSX.platform/Developer/SDKs/$(XCODE_SDK)
 
 TOOLCHAIN_SRCS = 
 TOOLCHAIN_INCS = 
@@ -63,17 +65,20 @@ TOOLCHAIN_LIBS =
 # BUILD TOOL COMMANDS
 #------------------------
 
-# C Compiler: Lcc-win64 C Compiler
-CC_PATH = $(LCC_ROOT)/bin
-CC = "$(CC_PATH)/lcc64"
+# C Compiler: Clang C Compiler
+CC = xcrun clang
 
-# Linker: Lcc-win64 Linker
-LD_PATH = $(LCC_ROOT)/bin
-LD = "$(LD_PATH)/lcclnk64"
+# Linker: Clang Linker
+LD = xcrun clang++
 
-# Archiver: Lcc-win64 Archiver
-AR_PATH = $(LCC_ROOT)/bin
-AR = "$(AR_PATH)/lcclib64"
+# C++ Compiler: Clang C++ Compiler
+CPP = xcrun clang++
+
+# C++ Linker: Clang C++ Linker
+CPP_LD = xcrun clang++
+
+# Archiver: Clang Archiver
+AR = xcrun ar
 
 # MEX Tool: MEX Tool
 MEX_PATH = $(MATLAB_ARCH_BIN)
@@ -86,7 +91,7 @@ DOWNLOAD =
 EXECUTE = $(PRODUCT)
 
 # Builder: GMAKE Utility
-MAKE_PATH = %MATLAB%\bin\win64
+MAKE_PATH = %MATLAB%/bin/maci64
 MAKE = "$(MAKE_PATH)/gmake"
 
 
@@ -95,32 +100,45 @@ MAKE = "$(MAKE_PATH)/gmake"
 #-------------------------
 
 CDEBUG              = -g
-C_OUTPUT_FLAG       = -Fo
-LDDEBUG             =
+C_OUTPUT_FLAG       = -o
+LDDEBUG             = -g
+OUTPUT_FLAG         = -o
+CPPDEBUG            = -g
+CPP_OUTPUT_FLAG     = -o
+CPPLDDEBUG          = -g
 OUTPUT_FLAG         = -o
 ARDEBUG             =
-STATICLIB_OUTPUT_FLAG = /out:
+STATICLIB_OUTPUT_FLAG =
 MEX_DEBUG           = -g
-RM                  = @del /F
+RM                  = @rm -f
 ECHO                = @echo
-MV                  = @move
+MV                  = @mv
 RUN                 =
 
 #----------------------------------------
 # "Faster Builds" Build Configuration
 #----------------------------------------
 
-ARFLAGS              =
-CFLAGS               = -c -w -noregistrylookup -nodeclspec -I$(LCC_ROOT)/include64
+ARFLAGS              = ruvs
+CFLAGS               = -c -isysroot $(XCODE_SDK_ROOT) -arch $(ARCHS) $(C_STANDARD_OPTS) -mmacosx-version-min=10.15 \
+                       -O0
+CPPFLAGS             = -c -isysroot $(XCODE_SDK_ROOT) -arch $(ARCHS) $(CPP_STANDARD_OPTS) -mmacosx-version-min=10.15 \
+                       -O0
+CPP_LDFLAGS          = -arch $(ARCHS) -isysroot $(XCODE_SDK_ROOT) -Wl,-rpath,@executable_path -Wl,-rpath,@executable_path/$(RELATIVE_PATH_TO_ANCHOR)
+CPP_SHAREDLIB_LDFLAGS  = -arch $(ARCHS)  \
+                         -dynamiclib -install_name @rpath/$(notdir $(PRODUCT)) -isysroot $(XCODE_SDK_ROOT) \
+                         -Wl,$(LD_NAMESPACE) $(LD_UNDEFS)
 DOWNLOAD_FLAGS       =
 EXECUTE_FLAGS        =
-LDFLAGS              = -s -L$(LCC_LIB) $(LDFLAGS_ADDITIONAL)
+LDFLAGS              = -arch $(ARCHS) -isysroot $(XCODE_SDK_ROOT) -Wl,-rpath,@executable_path -Wl,-rpath,@executable_path/$(RELATIVE_PATH_TO_ANCHOR)
 MEX_CPPFLAGS         =
 MEX_CPPLDFLAGS       =
 MEX_CFLAGS           =
 MEX_LDFLAGS          =
 MAKE_FLAGS           = -f $(MAKEFILE)
-SHAREDLIB_LDFLAGS    = -dll -entry LibMain -s -L$(LCC_LIB) $(LDFLAGS_ADDITIONAL) $(DEF_FILE)
+SHAREDLIB_LDFLAGS    = -arch $(ARCHS)  \
+                       -dynamiclib -install_name @rpath/$(notdir $(PRODUCT)) -isysroot $(XCODE_SDK_ROOT) \
+                       -Wl,$(LD_NAMESPACE) $(LD_UNDEFS)
 
 
 
@@ -128,7 +146,7 @@ SHAREDLIB_LDFLAGS    = -dll -entry LibMain -s -L$(LCC_LIB) $(LDFLAGS_ADDITIONAL)
 ## OUTPUT INFO
 ###########################################################################
 
-PRODUCT = $(RELATIVE_PATH_TO_ANCHOR)/controller.exe
+PRODUCT = $(RELATIVE_PATH_TO_ANCHOR)/controller
 PRODUCT_TYPE = "executable"
 BUILD_TYPE = "Top-Level Standalone Executable"
 
@@ -165,9 +183,9 @@ ALL_SRCS = $(SRCS) $(MAIN_SRC)
 ## OBJECTS
 ###########################################################################
 
-OBJS = controller.obj controller_data.obj rtGetInf.obj rtGetNaN.obj rt_nonfinite.obj
+OBJS = controller.o controller_data.o rtGetInf.o rtGetNaN.o rt_nonfinite.o
 
-MAIN_OBJ = ert_main.obj
+MAIN_OBJ = ert_main.o
 
 ALL_OBJS = $(OBJS) $(MAIN_OBJ)
 
@@ -197,9 +215,19 @@ SYSTEM_LIBS =
 # C Compiler
 #---------------
 
+CFLAGS_TFL = -msse2
 CFLAGS_BASIC = $(DEFINES) $(INCLUDES)
 
-CFLAGS += $(CFLAGS_BASIC)
+CFLAGS += $(CFLAGS_TFL) $(CFLAGS_BASIC)
+
+#-----------------
+# C++ Compiler
+#-----------------
+
+CPPFLAGS_TFL = -msse2
+CPPFLAGS_BASIC = $(DEFINES) $(INCLUDES)
+
+CPPFLAGS += $(CPPFLAGS_TFL) $(CPPFLAGS_BASIC)
 
 ###########################################################################
 ## INLINED COMMANDS
@@ -245,7 +273,7 @@ execute : download
 
 $(PRODUCT) : $(OBJS) $(PREBUILT_OBJS) $(MAIN_OBJ)
 	@echo "### Creating standalone executable "$(PRODUCT)" ..."
-	$(LD) $(LDFLAGS) -o $(PRODUCT) @$(CMD_FILE) $(subst /,\,$(SYSTEM_LIBS)) $(subst /,\,$(TOOLCHAIN_LIBS))
+	$(LD) $(LDFLAGS) -o $(PRODUCT) $(OBJS) $(MAIN_OBJ) $(SYSTEM_LIBS) $(TOOLCHAIN_LIBS)
 	@echo "### Created: $(PRODUCT)"
 
 
@@ -257,52 +285,76 @@ $(PRODUCT) : $(OBJS) $(PREBUILT_OBJS) $(MAIN_OBJ)
 # SOURCE-TO-OBJECT
 #---------------------
 
-%.obj : %.c
-	$(CC) $(CFLAGS) -Fo"$@" $(subst /,\,"$<")
+%.o : %.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
 
 
-%.obj : $(RELATIVE_PATH_TO_ANCHOR)/%.c
-	$(CC) $(CFLAGS) -Fo"$@" $(subst /,\,"$<")
+%.o : %.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-%.obj : $(START_DIR)/%.c
-	$(CC) $(CFLAGS) -Fo"$@" $(subst /,\,"$<")
+%.o : $(RELATIVE_PATH_TO_ANCHOR)/%.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
 
 
-%.obj : $(START_DIR)/controller_ert_rtw/%.c
-	$(CC) $(CFLAGS) -Fo"$@" $(subst /,\,"$<")
+%.o : $(RELATIVE_PATH_TO_ANCHOR)/%.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-%.obj : $(MATLAB_ROOT)/rtw/c/src/%.c
-	$(CC) $(CFLAGS) -Fo"$@" $(subst /,\,"$<")
+%.o : $(START_DIR)/%.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
 
 
-%.obj : $(MATLAB_ROOT)/simulink/src/%.c
-	$(CC) $(CFLAGS) -Fo"$@" $(subst /,\,"$<")
+%.o : $(START_DIR)/%.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-controller.obj : $(START_DIR)/controller_ert_rtw/controller.c
-	$(CC) $(CFLAGS) -Fo"$@" $(subst /,\,"$<")
+%.o : $(START_DIR)/controller_ert_rtw/%.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
 
 
-controller_data.obj : $(START_DIR)/controller_ert_rtw/controller_data.c
-	$(CC) $(CFLAGS) -Fo"$@" $(subst /,\,"$<")
+%.o : $(START_DIR)/controller_ert_rtw/%.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-ert_main.obj : $(START_DIR)/controller_ert_rtw/ert_main.c
-	$(CC) $(CFLAGS) -Fo"$@" $(subst /,\,"$<")
+%.o : $(MATLAB_ROOT)/rtw/c/src/%.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
 
 
-rtGetInf.obj : $(START_DIR)/controller_ert_rtw/rtGetInf.c
-	$(CC) $(CFLAGS) -Fo"$@" $(subst /,\,"$<")
+%.o : $(MATLAB_ROOT)/rtw/c/src/%.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
 
 
-rtGetNaN.obj : $(START_DIR)/controller_ert_rtw/rtGetNaN.c
-	$(CC) $(CFLAGS) -Fo"$@" $(subst /,\,"$<")
+%.o : $(MATLAB_ROOT)/simulink/src/%.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
 
 
-rt_nonfinite.obj : $(START_DIR)/controller_ert_rtw/rt_nonfinite.c
-	$(CC) $(CFLAGS) -Fo"$@" $(subst /,\,"$<")
+%.o : $(MATLAB_ROOT)/simulink/src/%.cpp
+	$(CPP) $(CPPFLAGS) -o "$@" "$<"
+
+
+controller.o : $(START_DIR)/controller_ert_rtw/controller.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+controller_data.o : $(START_DIR)/controller_ert_rtw/controller_data.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+ert_main.o : $(START_DIR)/controller_ert_rtw/ert_main.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+rtGetInf.o : $(START_DIR)/controller_ert_rtw/rtGetInf.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+rtGetNaN.o : $(START_DIR)/controller_ert_rtw/rtGetNaN.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+rt_nonfinite.o : $(START_DIR)/controller_ert_rtw/rt_nonfinite.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
 
 
 ###########################################################################
@@ -331,6 +383,9 @@ info :
 	@echo "### CFLAGS = $(CFLAGS)"
 	@echo "### LDFLAGS = $(LDFLAGS)"
 	@echo "### SHAREDLIB_LDFLAGS = $(SHAREDLIB_LDFLAGS)"
+	@echo "### CPPFLAGS = $(CPPFLAGS)"
+	@echo "### CPP_LDFLAGS = $(CPP_LDFLAGS)"
+	@echo "### CPP_SHAREDLIB_LDFLAGS = $(CPP_SHAREDLIB_LDFLAGS)"
 	@echo "### ARFLAGS = $(ARFLAGS)"
 	@echo "### MEX_CFLAGS = $(MEX_CFLAGS)"
 	@echo "### MEX_CPPFLAGS = $(MEX_CPPFLAGS)"
@@ -343,8 +398,8 @@ info :
 
 clean : 
 	$(ECHO) "### Deleting all derived files..."
-	$(RM) $(subst /,\,$(PRODUCT))
-	$(RM) $(subst /,\,$(ALL_OBJS))
+	$(RM) $(PRODUCT)
+	$(RM) $(ALL_OBJS)
 	$(ECHO) "### Deleted all derived files."
 
 
