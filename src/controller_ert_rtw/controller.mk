@@ -2,7 +2,7 @@
 ## Makefile generated for component 'controller'. 
 ## 
 ## Makefile     : controller.mk
-## Generated on : Sat Jan 28 16:08:20 2023
+## Generated on : Mon Jan 30 22:35:45 2023
 ## Final product: $(RELATIVE_PATH_TO_ANCHOR)/controller.exe
 ## Product type : executable
 ## 
@@ -22,7 +22,7 @@ MAKEFILE                  = controller.mk
 MATLAB_ROOT               = C:/PROGRA~1/MATLAB/R2022b
 MATLAB_BIN                = C:/PROGRA~1/MATLAB/R2022b/bin
 MATLAB_ARCH_BIN           = $(MATLAB_BIN)/win64
-START_DIR                 = C:/Users/Abhishek/Downloads/Formula/git/vehicle_control_system/src
+START_DIR                 = C:/Users/dr_pa/git/school/vehicle_control_system/src
 SOLVER                    = 
 SOLVER_OBJ                = 
 CLASSIC_INTERFACE         = 0
@@ -155,7 +155,7 @@ DEFINES = $(DEFINES_BUILD_ARGS) $(DEFINES_CUSTOM) $(DEFINES_OPTS) $(DEFINES_STAN
 ## SOURCE FILES
 ###########################################################################
 
-SRCS = $(START_DIR)/controller_ert_rtw/controller.c $(START_DIR)/controller_ert_rtw/controller_data.c
+SRCS = $(START_DIR)/controller_ert_rtw/controller.c $(START_DIR)/controller_ert_rtw/controller_data.c $(START_DIR)/controller_ert_rtw/rtGetInf.c $(START_DIR)/controller_ert_rtw/rtGetNaN.c $(START_DIR)/controller_ert_rtw/rt_nonfinite.c
 
 MAIN_SRC = $(START_DIR)/controller_ert_rtw/ert_main.c
 
@@ -165,7 +165,7 @@ ALL_SRCS = $(SRCS) $(MAIN_SRC)
 ## OBJECTS
 ###########################################################################
 
-OBJS = controller.obj controller_data.obj
+OBJS = controller.obj controller_data.obj rtGetInf.obj rtGetNaN.obj rt_nonfinite.obj
 
 MAIN_OBJ = ert_main.obj
 
@@ -290,6 +290,18 @@ controller_data.obj : $(START_DIR)/controller_ert_rtw/controller_data.c
 
 
 ert_main.obj : $(START_DIR)/controller_ert_rtw/ert_main.c
+	$(CC) $(CFLAGS) -Fo"$@" $(subst /,\,"$<")
+
+
+rtGetInf.obj : $(START_DIR)/controller_ert_rtw/rtGetInf.c
+	$(CC) $(CFLAGS) -Fo"$@" $(subst /,\,"$<")
+
+
+rtGetNaN.obj : $(START_DIR)/controller_ert_rtw/rtGetNaN.c
+	$(CC) $(CFLAGS) -Fo"$@" $(subst /,\,"$<")
+
+
+rt_nonfinite.obj : $(START_DIR)/controller_ert_rtw/rt_nonfinite.c
 	$(CC) $(CFLAGS) -Fo"$@" $(subst /,\,"$<")
 
 

@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'controller'.
  *
- * Model version                  : 1.9
+ * Model version                  : 1.15
  * Simulink Coder version         : 9.8 (R2022b) 13-May-2022
- * C/C++ source code generated on : Sat Jan 28 16:12:49 2023
+ * C/C++ source code generated on : Tue Jan 31 00:31:24 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -21,7 +21,32 @@
 
 /* Invariant block signals (default storage) */
 const ConstB_controller_T controller_ConstB = {
-  50.0F                                /* '<S5>/Gain1' */
+  0.0F,                                /* '<S12>/Data Type Conversion1' */
+  0.0F,                                /* '<S12>/Data Type Conversion2' */
+  0.0F,                                /* '<S18>/Subtract1' */
+  4095.0F,                             /* '<S12>/Data Type Conversion' */
+  4095.0F,                             /* '<S18>/Subtract' */
+  0.0F,                                /* '<S18>/Divide' */
+  0.0F,                                /* '<S18>/Gain' */
+  4095.0F,                             /* '<S11>/Data Type Conversion' */
+  0.0F,                                /* '<S11>/Data Type Conversion2' */
+  4095.0F,                             /* '<S16>/Subtract' */
+  0.0F,                                /* '<S13>/Data Type Conversion1' */
+  0.0F,                                /* '<S13>/Data Type Conversion2' */
+  0.0F,                                /* '<S20>/Subtract1' */
+  4095.0F,                             /* '<S13>/Data Type Conversion' */
+  4095.0F,                             /* '<S20>/Subtract' */
+  0.0F,                                /* '<S20>/Divide' */
+  0.0F,                                /* '<S20>/Gain' */
+  0.0F,                                /* '<S2>/Switch2' */
+  0.0F,                                /* '<S4>/Gain3' */
+  0.5F,                                /* '<S5>/Gain1' */
+  0,                                   /* '<S4>/Data Type Conversion1' */
+  1,                                   /* '<S4>/Data Type Conversion2' */
+  1,                                   /* '<S19>/Lower Test' */
+  1,                                   /* '<S19>/Upper Test' */
+  1,                                   /* '<S19>/FixPt Logical Operator' */
+  0                                    /* '<S13>/NOT' */
 };
 
 /* Constant parameters (default storage) */

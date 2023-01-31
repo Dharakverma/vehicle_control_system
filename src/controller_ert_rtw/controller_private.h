@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'controller'.
  *
- * Model version                  : 1.9
+ * Model version                  : 1.15
  * Simulink Coder version         : 9.8 (R2022b) 13-May-2022
- * C/C++ source code generated on : Sat Jan 28 16:12:49 2023
+ * C/C++ source code generated on : Tue Jan 31 00:31:24 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -70,7 +70,7 @@ Verification pane for ERT based targets, which will disable the \
 preprocessor word size checks.
 #endif
 
-extern real32_T look1_iflf_binlxpw(real32_T u0, const real32_T bp0[], const
+extern real32_T look1_iflf_binlcpw(real32_T u0, const real32_T bp0[], const
   real32_T table[], uint32_T maxIndex);
 
 #endif                                 /* RTW_HEADER_controller_private_h_ */
