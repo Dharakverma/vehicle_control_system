@@ -111,7 +111,7 @@ typedef struct AMK_TEMPS{
 
 #define AMK_SETPOINTS_ENDIANNESS (CAN_LITTLE_ENDIAN)
 #define AMK_STS_ENDIANNESS (CAN_LITTLE_ENDIAN)
-#define AMK_TEMP_ENDIANNESS (CAN_LITTLE_ENDIAN)
+#define AMK_TEMPS_ENDIANNESS (CAN_LITTLE_ENDIAN)
 
 
 /*********************************************************

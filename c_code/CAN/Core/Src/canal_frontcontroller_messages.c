@@ -234,6 +234,16 @@ TeCanALRet UnmarshalAMK1_STS(uint8_t * RxData){
 
 }
 
+TeCanALRet UnMarshalAMK0_TEMPS(uint8_t * RxData){
+    uint64_t data;
+    TsAMK_TEMPS temp;
+    TeCanALRet ret;
+
+    ret = getDataWordFromByteArray(RxData, &data, AMK_TEMPS_ENDIANNESS);
+    if (ret != CAN_OK) return ret;
+
+}
+
 /*********************************************************
 *               FUNCTION POINTER TABLE
 *********************************************************/

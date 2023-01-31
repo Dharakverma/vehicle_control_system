@@ -62,12 +62,16 @@ CAN_TxHeaderTypeDef TxHeader;
 CAN_TxHeaderTypeDef TxHeader2;
 CAN_TxHeaderTypeDef TxHeader3;
 CAN_RxHeaderTypeDef RxHeader;
-//uint8_t TxData[8];
+uint8_t TxData[8];
 uint8_t TxData2[8];
 uint8_t TxData3[8];
 //uint8_t TxData4[8];
 uint8_t RxData[8];
 uint32_t TxMailbox;
+
+//TxData[8] = {0x00,0x02,0x00,0x00,0x00,0x00,0x00,0x00};
+//TxData2[8] = {0x00,0x05,0x00,0x00,0x00,0x00,0x00,0x00};
+//TxData3[8] = {0x00,0x07,0x00,0x00,0x00,0x00,0x00,0x00};
 
 /* USER CODE END PV */
 
@@ -104,7 +108,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -157,13 +161,13 @@ int main(void)
   TxHeader.DLC = 8;
   TxHeader.IDE = CAN_ID_STD;
   TxHeader.RTR = CAN_RTR_DATA;
-  TxHeader.StdId = 0x200;
+  TxHeader.StdId = 0x184;
   TxHeader.TransmitGlobalTime = DISABLE;
 
   TxHeader2.DLC = 8;
   TxHeader2.IDE = CAN_ID_STD;
   TxHeader2.RTR = CAN_RTR_DATA;
-  TxHeader2.StdId = 0x200;
+  TxHeader2.StdId = 0x185;
   TxHeader2.TransmitGlobalTime = DISABLE;
 
   TxHeader3.DLC = 8;
@@ -172,23 +176,32 @@ int main(void)
   TxHeader3.StdId = 0x500;
   TxHeader3.TransmitGlobalTime = DISABLE;
 
-  TxData2[0] = 0xAB;
-  TxData2[1] = 0xCD;
-  TxData2[2] = 0xEF;
-  TxData2[3] = 0x12;
-  TxData2[4] = 0x33;
-  TxData2[5] = 0x21;
-  TxData2[6] = 0x69;
-  TxData2[7] = 0x69;
+  TxData[0] = 0x00;
+  TxData[1] = 0x02;
+  TxData[2] = 0x00;
+  TxData[3] = 0x00;
+  TxData[4] = 0x00;
+  TxData[5] = 0x00;
+  TxData[6] = 0x00;
+  TxData[7] = 0x00;
 
-  TxData3[0] = 0x01;
-  TxData3[1] = 0x02;
-  TxData3[2] = 0xFF;
-  TxData3[3] = 0xFF;
-  TxData3[4] = 0xFF;
-  TxData3[5] = 0xFF;
-  TxData3[6] = 0xFF;
-  TxData3[7] = 0xFF;
+  TxData2[0] = 0x00;
+  TxData2[1] = 0x05;
+  TxData2[2] = 0x00;
+  TxData2[3] = 0x00;
+  TxData2[4] = 0x00;
+  TxData2[5] = 0x00;
+  TxData2[6] = 0x00;
+  TxData2[7] = 0x00;
+
+  TxData3[0] = 0x00;
+  TxData3[1] = 0x07;
+  TxData3[2] = 0x00;
+  TxData3[3] = 0x00;
+  TxData3[4] = 0x00;
+  TxData3[5] = 0x00;
+  TxData3[6] = 0x00;
+  TxData3[7] = 0x00;
 
   // Init adc 1 and 2
   MX_ADC1_Init();
@@ -200,13 +213,39 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)  {
 	// Get ADC value
-	HAL_ADC_Start(&hadc1);
-	HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
-	raw = HAL_ADC_GetValue(&hadc1);
+//	HAL_ADC_Start(&hadc1);
+//	HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
+//	raw = HAL_ADC_GetValue(&hadc1);
+//
+//	controller_U.DI_V_AccelPedalPos1 = raw;
 
-	controller_U.DI_V_AccelPedalPos1 = raw;
+	  //this is where dumb shit goes down
 
-	HAL_Delay(100);
+
+	  for(uint8_t i = 0;i<250; i++){
+		  HAL_CAN_AddTxMessage(&hcan1, &TxHeader, TxData, &TxMailbox);
+		  HAL_Delay(50);
+	  }
+
+	  for(uint8_t i = 0;i<250; i++){
+		  HAL_CAN_AddTxMessage(&hcan1, &TxHeader, TxData2, &TxMailbox);
+		  HAL_Delay(50);
+	  }
+
+
+	  for(uint8_t i = 0;i<250; i++){
+		  HAL_CAN_AddTxMessage(&hcan1, &TxHeader, TxData3, &TxMailbox);
+		  HAL_Delay(50);
+	  }
+
+
+
+
+
+
+
+
+//	HAL_Delay(100);
   }
     /* USER CODE END WHILE */
 

@@ -6,5 +6,8 @@
 ../Core/Src/canal_frontcontroller_messages.c:119:19:setDataWordIntoByteArray	24	static
 ../Core/Src/canal_frontcontroller_messages.c:140:12:UnmarshalAMKSetpoints	40	static
 ../Core/Src/canal_frontcontroller_messages.c:160:12:MarshalAMKSetpoints	64	static
-../Core/Src/canal_frontcontroller_messages.c:203:12:GetBinaryUnmarshaller	24	static
-../Core/Src/canal_frontcontroller_messages.c:215:12:GetBinaryMarshaller	24	static
+../Core/Src/canal_frontcontroller_messages.c:179:12:UnmarshalAMK0_STS	104	static
+../Core/Src/canal_frontcontroller_messages.c:208:12:UnmarshalAMK1_STS	104	static
+../Core/Src/canal_frontcontroller_messages.c:237:12:UnMarshalAMK0_TEMPS	40	static
+../Core/Src/canal_frontcontroller_messages.c:273:12:GetBinaryUnmarshaller	24	static
+../Core/Src/canal_frontcontroller_messages.c:285:12:GetBinaryMarshaller	24	static
