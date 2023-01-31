@@ -1,0 +1,4 @@
+../Autogen/controller_ert_rtw/rtGetInf.c:30:8:rtGetInf	32	static
+../Autogen/controller_ert_rtw/rtGetInf.c:54:10:rtGetInfF	16	static
+../Autogen/controller_ert_rtw/rtGetInf.c:65:8:rtGetMinusInf	32	static
+../Autogen/controller_ert_rtw/rtGetInf.c:89:10:rtGetMinusInfF	16	static

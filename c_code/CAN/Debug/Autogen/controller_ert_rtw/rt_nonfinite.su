@@ -1,0 +1,5 @@
+../Autogen/controller_ert_rtw/rt_nonfinite.c:38:6:rt_InitInfAndNaN	16	static
+../Autogen/controller_ert_rtw/rt_nonfinite.c:50:11:rtIsInf	16	static
+../Autogen/controller_ert_rtw/rt_nonfinite.c:56:11:rtIsInfF	16	static
+../Autogen/controller_ert_rtw/rt_nonfinite.c:62:11:rtIsNaN	32	static
+../Autogen/controller_ert_rtw/rt_nonfinite.c:84:11:rtIsNaNF	24	static

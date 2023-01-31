@@ -1,0 +1,7 @@
+../Core/Src/printf.c:27:16:Printf_Init	24	static
+../Core/Src/printf.c:48:5:_isatty	16	static
+../Core/Src/printf.c:57:5:_write	32	static
+../Core/Src/printf.c:75:5:_close	16	static
+../Core/Src/printf.c:84:5:_lseek	24	static
+../Core/Src/printf.c:93:5:_read	32	static
+../Core/Src/printf.c:110:5:_fstat	16	static

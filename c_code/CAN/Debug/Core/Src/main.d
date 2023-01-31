@@ -34,8 +34,12 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_uart_ex.h \
  ../Core/Inc/uart.h ../Core/Inc/main.h ../Core/Inc/printf.h \
  ../Core/Inc/uart.h ../Core/Inc/canal.h ../Core/Inc/canal_types.h \
- ../Core/Inc/canal_frontcontroller_messages.h ../Autogen/Inc/controller.h \
- ../Autogen/Inc/rtwtypes.h ../Autogen/Inc/controller_types.h
+ ../Core/Inc/canal_frontcontroller_messages.h \
+ ../Autogen/controller_ert_rtw/controller.h \
+ ../Autogen/controller_ert_rtw/rtwtypes.h \
+ ../Autogen/controller_ert_rtw/controller_types.h \
+ ../Autogen/controller_ert_rtw/rtGetInf.h \
+ ../Autogen/controller_ert_rtw/rt_nonfinite.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h:
 ../Core/Inc/stm32f7xx_hal_conf.h:
@@ -77,6 +81,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/Inc/canal.h:
 ../Core/Inc/canal_types.h:
 ../Core/Inc/canal_frontcontroller_messages.h:
-../Autogen/Inc/controller.h:
-../Autogen/Inc/rtwtypes.h:
-../Autogen/Inc/controller_types.h:
+../Autogen/controller_ert_rtw/controller.h:
+../Autogen/controller_ert_rtw/rtwtypes.h:
+../Autogen/controller_ert_rtw/controller_types.h:
+../Autogen/controller_ert_rtw/rtGetInf.h:
+../Autogen/controller_ert_rtw/rt_nonfinite.h:

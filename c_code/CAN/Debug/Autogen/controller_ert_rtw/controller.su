@@ -1,0 +1,4 @@
+../Autogen/controller_ert_rtw/controller.c:102:10:look1_iflf_binlcpw	48	static
+../Autogen/controller_ert_rtw/controller.c:161:6:controller_step	32	static
+../Autogen/controller_ert_rtw/controller.c:992:6:controller_initialize	8	static
+../Autogen/controller_ert_rtw/controller.c:1001:6:controller_terminate	4	static

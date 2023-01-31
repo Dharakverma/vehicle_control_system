@@ -13,7 +13,7 @@ RM := rm -rf
 -include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk
 -include Core/Inc/subdir.mk
--include Autogen/src/subdir.mk
+-include Autogen/controller_ert_rtw/subdir.mk
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)
