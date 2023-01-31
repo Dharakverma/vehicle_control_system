@@ -1,4 +1,0 @@
-../Autogen/src/controller.c:101:10:look1_iflf_binlxpw	48	static
-../Autogen/src/controller.c:160:6:controller_step	24	static
-../Autogen/src/controller.c:982:6:controller_initialize	4	static
-../Autogen/src/controller.c:988:6:controller_terminate	4	static

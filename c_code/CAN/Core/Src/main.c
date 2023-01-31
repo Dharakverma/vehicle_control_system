@@ -90,7 +90,8 @@ static void CAN_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-uint32_t raw = 0;
+uint32_t accelPedalAdc = 0;
+uint32_t breakPedalAdc = 0;
 uint32_t counter = 0;
 
 /* USER CODE END 0 */
@@ -142,7 +143,6 @@ int main(void)
 		.mode = UART_TX_RX,
 		.datasize = UART_Datasize_8,
 		.uart_num = 3};
-
 	Printf_Init(&uart3);
 
 	CAN_Config();
@@ -202,9 +202,36 @@ int main(void)
 	TxData3[6] = 0x00;
 	TxData3[7] = 0x00;
 
-	// Init adc 1 and 2
+	// Init steering and brake angle sensor ADC's
+	// TODO: Add 2 more ADC for another accelerator and steering angle sensor
 	MX_ADC1_Init();
 	MX_ADC2_Init();
+
+	// Spoof battery contactor status values
+	controller_U.BM_b_prechrgContactorSts = PRECHRG_CONTACTOR_STATUS;
+	controller_U.BM_b_HVposContactorSts = HV_POS_CONTACTOR_STATUS;
+	controller_U.BM_b_HVnegContactorSts = HV_NEG_CONTACTOR_STATUS;
+
+	// Spoof steering angle as 0
+	controller_U.DI_V_SteeringAngle = 0;
+	
+	controller_U.DI_b_DriverButton = true;
+	controller_U.AMK_bSystemReady = true;
+	controller_U.AMK_bError = false;
+	controller_U.AMK_bQuitDcOn = false;
+	controller_U.AMK_bDcOn = true;
+	controller_U.AMK_bQuitInverterOn = false;
+	controller_U.AMK_bInverterOn = true;
+	controller_U.AMK_bDerating = false;
+
+	controller_U.AMK_TempMotor = 35;
+	controller_U.AMK_TempInverter = 35;
+	controller_U.AMK_ErrorInfo = 0;
+	
+	controller_U.AMK_TempIGBT = 35;
+	controller_U.AMK_ActualVelocity = 10;
+	controller_U.AMK_TorqueCurrent = 10;
+	controller_U.AMK_MagnetizingCurrent = 10;
 
 	/* USER CODE END 2 */
 
@@ -212,29 +239,19 @@ int main(void)
 	/* USER CODE BEGIN WHILE */
 	while (1)
 	{
-		// Get ADC value
-		//	HAL_ADC_Start(&hadc1);
-		//	HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
-		//	raw = HAL_ADC_GetValue(&hadc1);
-		//
-		//	controller_U.DI_V_AccelPedalPos1 = raw;
+		// Get accelerator and brake pedal (ADC) inputs
+		HAL_ADC_Start(&hadc1);
+		HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
+		accelPedalAdc = HAL_ADC_GetValue(&hadc1);
 
-		for(uint8_t i = 0;i<250; i++){
-		  HAL_CAN_AddTxMessage(&hcan1, &TxHeader, TxData, &TxMailbox);
-		  HAL_Delay(50);
-		}
-
-		for(uint8_t i = 0;i<250; i++){
-		  HAL_CAN_AddTxMessage(&hcan1, &TxHeader, TxData2, &TxMailbox);
-		  HAL_Delay(50);
-		}
-
-		for(uint8_t i = 0;i<250; i++){
-		  HAL_CAN_AddTxMessage(&hcan1, &TxHeader, TxData3, &TxMailbox);
-		  HAL_Delay(50);
-		}
-
-		//	HAL_Delay(100);
+		HAL_ADC_Start(&hadc2);
+		HAL_ADC_PollForConversion(&hadc2, HAL_MAX_DELAY);
+		accelPedalAdc = HAL_ADC_GetValue(&hadc2);
+		
+		// For testing purposes, we will use the same ADC input for both accelerator pedals
+		controller_U.DI_V_AccelPedalPos1 = accelPedalAdc;
+		controller_U.DI_V_AccelPedalPos2 = accelPedalAdc;
+		controller_U.DI_V_BrakePedalPos = breakPedalAdc;
 	}
 	/* USER CODE END WHILE */
 

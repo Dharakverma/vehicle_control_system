@@ -62,6 +62,12 @@ void Error_Handler(void);
 #define LD2_Pin GPIO_PIN_7
 #define LD2_GPIO_Port GPIOB
 
+// Spoof battery contactor inputs to jump into a running state
+// TODO: Replace with CAN signals from the BMS
+#define PRECHRG_CONTACTOR_STATUS (0u)
+#define HV_POS_CONTACTOR_STATUS  (1u)
+#define HV_NEG_CONTACTOR_STATUS  (1u)
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
