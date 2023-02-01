@@ -216,20 +216,20 @@ int main(void)
 	controller_U.DI_b_DriverButton = true;
 	controller_U.AMK_bSystemReady = true;
 	controller_U.AMK_bError = false;
-	controller_U.AMK_bQuitDcOn = false;
+	controller_U.AMK_bQuitDcOn = true;
 	controller_U.AMK_bDcOn = true;
-	controller_U.AMK_bQuitInverterOn = false;
+	controller_U.AMK_bQuitInverterOn = true;
 	controller_U.AMK_bInverterOn = true;
 	controller_U.AMK_bDerating = false;
 
-	controller_U.AMK_TempMotor = 35;
-	controller_U.AMK_TempInverter = 35;
-	controller_U.AMK_ErrorInfo = 0;
-	
-	controller_U.AMK_TempIGBT = 35;
-	controller_U.AMK_ActualVelocity = 10;
-	controller_U.AMK_TorqueCurrent = 10;
-	controller_U.AMK_MagnetizingCurrent = 10;
+//	controller_U.AMK_TempMotor = 35;
+//	controller_U.AMK_TempInverter = 35;
+//	controller_U.AMK_ErrorInfo = 0;
+//
+//	controller_U.AMK_TempIGBT = 35;
+//	controller_U.AMK_ActualVelocity = 10;
+//	controller_U.AMK_TorqueCurrent = 10;
+//	controller_U.AMK_MagnetizingCurrent = 10;
 
 	/* USER CODE END 2 */
 
