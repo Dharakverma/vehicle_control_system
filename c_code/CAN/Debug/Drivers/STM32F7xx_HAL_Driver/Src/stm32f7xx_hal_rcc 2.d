@@ -1,5 +1,5 @@
-Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.o: \
- ../Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c \
+Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc 2.o: \
+ ../Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc\ 2.c \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h \
  ../Core/Inc/stm32f7xx_hal_conf.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_rcc.h \
