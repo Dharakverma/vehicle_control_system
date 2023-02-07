@@ -339,7 +339,7 @@ int main(void)
 		
 		HAL_ADC_Start(&hadc2);
 		HAL_ADC_PollForConversion(&hadc2, HAL_MAX_DELAY);
-		accelPedalAdc = HAL_ADC_GetValue(&hadc2);
+//		accelPedalAdc = HAL_ADC_GetValue(&hadc2);
 		
 //		 For testing purposes, we will use the same ADC input for both accelerator pedals
 		controller_U.DI_V_AccelPedalPos1 = accelPedalAdc;
@@ -695,7 +695,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 		Error_Handler();
 	}
 
-//	IncomingCANMessageHandler(&RxHeader.StdId, RxData);
+	IncomingCANMessageHandler(&RxHeader.StdId, RxData);
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)
