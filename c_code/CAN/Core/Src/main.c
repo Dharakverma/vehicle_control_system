@@ -65,8 +65,8 @@ CAN_TxHeaderTypeDef TxHeaderInv3;
 CAN_RxHeaderTypeDef RxHeader;
 
 uint8_t TxInvDcOn[8] = {0b00000000,
-					0b01000000, // Set bDcOn
-					0b00000000, 
+					0b00000010, // Set bDcOn
+					0b00000000,
 					0b00000000,
 					0b00000000,
 					0b00000000,
@@ -74,7 +74,7 @@ uint8_t TxInvDcOn[8] = {0b00000000,
 					0b00000000};
 
 uint8_t TxInvEnable[8] = {0b00000000,
-					0b01100000, // Set bEnable
+					0b00000110, // Set bEnable
 					0b00000000, 
 					0b00000000,
 					0b00000000,
@@ -83,7 +83,7 @@ uint8_t TxInvEnable[8] = {0b00000000,
 					0b00000000};
 
 uint8_t TxInvOn[8] = {0b00000000,
-					0b11100000, // Set bInverterOn
+					0b00000111, // Set bInverterOn
 					0b00000000, 
 					0b00000000,
 					0b00000000,
@@ -92,7 +92,7 @@ uint8_t TxInvOn[8] = {0b00000000,
 					0b00000000};	
 
 uint8_t TxResetErr[8] = {0b00000000,
-					0b00010000, // Reset error
+					0b00001111, // Reset error
 					0b00000000, 
 					0b00000000,
 					0b00000000,
@@ -109,14 +109,16 @@ uint8_t TxResetErr[8] = {0b00000000,
 // 					0b00000000,  // Torque limit negative [15:8]
 // 					0b00000000}; // Torque limit negative [7:0]
 
-uint8_t TxTorqueLimits[8] = {0b00000000,
-					0b11100000,
-					0b01000000,  // Target velocity [15:8]
-					0b00000000,  // Target velocity [7:0]
-					0b00000000,  // Torque limit positive [15:8]
-					0b00000000,  // Torque limit positive [7:0]
-					0b00000000,  // Torque limit negative [15:8]
-					0b00000000}; // Torque limit negative [7:0]
+//uint8_t TxTorqueLimits[8] = {0b00000000,
+//					0b00000111,
+////					controller_Y.AMK_TargetVelocity >>= 8,  // Target velocity [15:8]
+//					0b00000000,
+//					controller_Y.AMK_TargetVelocity,  // Target velocity [7:0]
+////					controller_Y.AMK_TorqueLimitPositiv >>= 8,  // Torque limit positive [15:8]
+//					0b00000000,
+//					controller_Y.AMK_TorqueLimitPositiv,  // Torque limit positive [7:0]
+//					0b00000000,  // Torque limit negative [15:8]
+//					0b00000000}; // Torque limit negative [7:0]
 
 uint8_t RxData[8];
 uint32_t TxMailbox;
@@ -242,7 +244,7 @@ int main(void)
 	TxHeaderInv1.DLC = 8;
 	TxHeaderInv1.IDE = CAN_ID_STD;
 	TxHeaderInv1.RTR = CAN_RTR_DATA;
-	TxHeaderInv1.StdId = 0x183; // 0x183 represents AMK setpoints 1
+	TxHeaderInv1.StdId = 0x185; // 0x183 represents AMK setpoints 1
 	TxHeaderInv1.TransmitGlobalTime = DISABLE;
 
 	TxHeaderInv2.DLC = 8;
@@ -297,39 +299,43 @@ int main(void)
 	while (1)
 	{
 
-		// Reset errors
-		for(int i=0; i<250; i++) {
-			HAL_CAN_AddTxMessage(&hcan1, &TxHeaderInv1, TxResetErr, &TxMailbox);
-			HAL_Delay(45);
-		}
+//		 Reset errors
+//		for(int i=0; i<250; i++) {
+//			HAL_CAN_AddTxMessage(&hcan1, &TxHeaderInv1, TxResetErr, &TxMailbox);
+//			HAL_Delay(45);
+//		}
 		// Get accelerator and brake pedal (ADC) inputs
 		HAL_ADC_Start(&hadc1);
 		HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
 		accelPedalAdc = HAL_ADC_GetValue(&hadc1);
 
 		// Send AMK_bDcOn = 1
-		for(int i=0; i<250; i++) {
-			HAL_CAN_AddTxMessage(&hcan1, &TxHeaderInv1, TxInvDcOn, &TxMailbox);
-			HAL_Delay(45);
-		}
-
-		// Enable inverter 1 
-		for(int i=0; i<250; i++) {
-			HAL_CAN_AddTxMessage(&hcan1, &TxHeaderInv1, TxInvEnable, &TxMailbox);
-			HAL_Delay(45);
-		}
-
-		// Turn on inverter 1 
-		for(int i=0; i<250; i++) {
-			HAL_CAN_AddTxMessage(&hcan1, &TxHeaderInv1, TxInvOn, &TxMailbox);
-			HAL_Delay(45);
-		}
-
-		//Set torque limits to non-zero values
-		for(int i=0; i<250; i++) {
-			HAL_CAN_AddTxMessage(&hcan1, &TxHeaderInv1, TxTorqueLimits, &TxMailbox);
-			HAL_Delay(45);
-		}
+//		for(int i=0; i<250; i++) {
+////			HAL_CAN_AddTxMessage(&hcan1, &TxHeaderInv1, TxInvDcOn, &TxMailbox);
+//			HAL_CAN_AddTxMessage(&hcan1, &TxHeaderInv1, TxInvDcOn, &TxMailbox);
+//			HAL_Delay(45);
+//		}
+//
+//		// Enable inverter 1
+//		for(int i=0; i<250; i++) {
+////			HAL_CAN_AddTxMessage(&hcan1, &TxHeaderInv1, TxInvEnable, &TxMailbox);
+//			HAL_CAN_AddTxMessage(&hcan1, &TxHeaderInv1, TxInvEnable, &TxMailbox);
+//			HAL_Delay(45);
+//		}
+//
+//		// Turn on inverter 1
+//		for(int i=0; i<250; i++) {
+////			HAL_CAN_AddTxMessage(&hcan1, &TxHeaderInv1, TxInvOn, &TxMailbox);
+//			HAL_CAN_AddTxMessage(&hcan1, &TxHeaderInv1, TxInvOn, &TxMailbox);
+//			HAL_Delay(45);
+//		}
+//
+//		//Set torque limits to non-zero values
+//		for(int i=0; i<250; i++) {
+////			HAL_CAN_AddTxMessage(&hcan1, &TxHeaderInv1, TxTorqueLimits, &TxMailbox);
+//			HAL_CAN_AddTxMessage(&hcan1, &TxHeaderInv1, TxTorqueLimits, &TxMailbox);
+//			HAL_Delay(45);
+//		}
 		
 		HAL_ADC_Start(&hadc2);
 		HAL_ADC_PollForConversion(&hadc2, HAL_MAX_DELAY);
@@ -339,6 +345,20 @@ int main(void)
 		controller_U.DI_V_AccelPedalPos1 = accelPedalAdc;
 		controller_U.DI_V_AccelPedalPos2 = accelPedalAdc;
 		controller_U.DI_V_BrakePedalPos = breakPedalAdc;
+
+		uint8_t TxTorqueLimits[8] = {0b00000000,
+							0b00000111,
+							controller_Y.AMK_TargetVelocity >> 8,  // Target velocity [15:8]
+							controller_Y.AMK_TargetVelocity,  // Target velocity [7:0]
+							controller_Y.AMK_TorqueLimitPositiv >> 8,  // Torque limit positive [15:8]
+							controller_Y.AMK_TorqueLimitPositiv,  // Torque limit positive [7:0]
+							0b00000000,  // Torque limit negative [15:8]
+							0b00000000}; // Torque limit negative [7:0]
+
+		HAL_CAN_AddTxMessage(&hcan1, &TxHeaderInv1, TxTorqueLimits, &TxMailbox);
+
+		HAL_Delay(45);
+
 	}
     /* USER CODE END WHILE */
 
@@ -675,7 +695,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 		Error_Handler();
 	}
 
-	IncomingCANMessageHandler(&RxHeader.StdId, RxData);
+//	IncomingCANMessageHandler(&RxHeader.StdId, RxData);
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)
