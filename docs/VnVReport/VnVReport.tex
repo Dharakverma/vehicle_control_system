@@ -348,27 +348,9 @@ The concept of code coverage is not applicable in model-based design.
 \newpage{}
 \section*{Appendix --- Reflection}
 
-The information in this section will be used to evaluate the team members on the
-graduate attribute of Reflection.  Please answer the following question:
-
-\begin{enumerate}
-  \item In what ways was the Verification and Validation (VnV) Plan different
-  from the activities that were actually conducted for VnV?  If there were
-  differences, what changes required the modification in the plan?  Why did
-  these changes occur?  Would you be able to anticipate these changes in future
-  projects?  If there weren't any differences, how was your team able to clearly
-  predict a feasible amount of effort and the right tasks needed to build the
-  evidence that demonstrates the required quality?  (It is expected that most
-  teams will have had to deviate from their original VnV Plan.)
-\end{enumerate}
-
-%scope reduction (dont need a full BMS anymore since we are using off the shelf)
-
-During activities conducted for VnV, it was decided that a simplification in architecture was required.
-This was due to having an off the shelf BMS being used in our vehicle, which negated the need to have an
-entire battery monitoring block. Since we are only monitoring the state of contactors to ensure we are in a 
-safe running state, we decided to make our entire vehicle control system's logic only revolve around vehicle
-propulsion. Anything regarding vehicle dynamics will be tested, and any battery tests can be neglected.
+The testing procedure (simulation environments) outlined in the VnV Plan, for system-level and unit tests, was adhered to fairly closely. This can be seen in the unit test and system test environments above, where module/system inputs are simulated using plant models, or supplied from manual signal building tools, and outputs are inspected using signal visualization tools.\\
+Despite this, in terms of specific test cases, we found our VnV Plan to be inadequate for testing minimum-level functionality of the control system. This is due primarily to its lack of consideration of unit tests, as this was early-stage of the project well before Design Documentation. Moreover, as our team honed our project's scope based on continual feedback and changing requirements from McMaster Formula Electric, the control system had major functionality cuts - most notably, the removal of the cooling control subsystem and battery management system (Formula will be using an off-the-shelf BMS) - as well as architecture design changes following early design discussions, such as a re-design of the "torque path" (any and all control logic between driver input and motor command output; in our control system, this was reflected in the Driver Interface -$>$ Vehicle Dynamnics -$>$ Motor Interface module flow). \\
+In the future, we would know to better manage interaction with our "user" - Mac Formula Electric. Discussion of specific control system topics was fragmented across time and across team members - in hindsight, it would've been ideal to call a team-lead "all-hands" in mid-Fall to review the control system's intended role and function on the vehicle, and how this relates to each team-lead's system.
 
 
 \end{document}
