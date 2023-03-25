@@ -1,0 +1,191 @@
+\documentclass{article}
+
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+\title{Problem Statement and Goals\\\progname}
+
+\author{\authname}
+
+\date{}
+
+\input{../Comments}
+\input{../Common}
+
+\begin{document}
+
+\maketitle
+
+\begin{table}[hp]
+\caption{Revision History} \label{TblRevisionHistory}
+\begin{tabularx}{\textwidth}{XXX}
+\toprule
+\textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
+\midrule
+September 25th, 2022 & Abhishek Magdum, Dharak Verma, Jason Surendran, Laura Yang, Derek Paylor & Initial document population\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Overview}
+Machines are designed by humans, for humans, 
+to make everyday life easier. Until a machine has a 
+method to control it, either through human control or 
+autonomous control, they are nothing more than a paperweight. 
+In our everyday world, cars are a ubiquitous machine used to 
+transport people and goods to their destination, and thereby 
+are a key pillar of a productive economy and society. In the 
+21st century, vehicles are becoming more interconnected and 
+sophisticated than ever and use computers to control almost 
+every subsystem of the vehicle. Control systems encapsulate 
+the “brains” behind such machines, allowing them to interpret 
+their environment using sensors, determine a desired state, and 
+manipulate the environment using actuators to achieve the 
+desired state. They convert a physical stimulus (from the 
+environment, including a user) into a control signal for a 
+component. Some examples of control systems seen in modern 
+cars today are engine/transmission controls, HVAC controls, 
+battery management (in hybrid/electric vehicles, anti-lock 
+braking (ABS) and electronic stability program (ESP).
+
+\subsection{Project Description}
+We are aiming to design, simulate, implement, and test a vehicle 
+control system for a quarter-scale Formula 1 style electric vehicle. 
+The control system will allow the vehicle to be operated in basic driving 
+conditions by managing the following vehicle subsystems: battery management, 
+cooling, vehicle mode selection, tractive motor, and vehicle dynamics. 
+This capstone will be in collaboration with the MAC Formula Electric FSAE team, 
+where we will be responsible for providing them with a suitable control 
+system for their vehicle within competition rule specifications. We will 
+be working with the embedded hardware provided by MAC Formula Electric for 
+implementing and testing our control system once software-based simulation and 
+validation is complete.
+
+\subsection{Inputs}
+Inputs to the control system are sourced from the various hardware sub-systems 
+of the vehicle, such as the battery management system, motor controller kit, 
+inertial sensors (accelerometer, gyroscope), and driver inputs via steering 
+and pedal sensors.Inputs from the battery management system regarding its 
+current state, battery module temperatures, voltage output, and current draw 
+must all be within safe operating specifications and thus will play a large 
+role in the overall state of the vehicle control system. 
+To comply with FSAE rulesets regarding the enabling of the tractive system, 
+entering ready-to-drive mode, and safely shutting the vehicle down, the control 
+system must also take input from the vehicle’s driver via physical push buttons 
+mounted on the steering wheel. Lastly, the control system will be responsible 
+for communication with the motor controllers which will be based on inputs from 
+the driver via the pedal tray.All the aforementioned inputs to the control system 
+will play a role in dictating the current state of the vehicle and its various 
+sub-systems.
+
+\subsection{Outputs}
+Based on the hardware and system state inputs described above, our control system 
+should output digital control signals for the vehicle’s actuators within each of 
+the vehicle’s subsystems, such as battery, cooling, and motor controllers.Some 
+vehicle systems work independently of each other. For example, the battery cooling 
+loop must only enable once a set temperature is met, and fan speed is modulated 
+based on heat generation and battery module temperatures. On the other hand, there 
+are systems in the vehicle, for example the systems that control vehicle propulsion, 
+that must work together in order to propel the vehicle. A simple push of the 
+accelerator pedal must translate to various messages to the battery management system 
+and motor controllers. These systems must be controlled and work in unisense to 
+propel the vehicle forward. All of these considerations and limitations must be 
+accounted for when programming of the vehicle control system commences.
+
+\subsection{Stakeholders}
+Primary stakeholder for this project, apart from the members of this group, include: 
+\begin{itemize}
+    \item MAC Formula Electric Team. The control system will be developed for the team to be 
+    able to utilize it in the final vehicle and compete in competitions.
+    \item Dr. Smith
+\end{itemize}
+
+Secondary stakeholders, who are not the focus but can still benefit from this project 
+being open source, include:
+\begin{itemize}
+    \item Current and future electric car developers, including future students on the Formula 
+    team who can learn from this project
+\end{itemize}
+
+\subsection{Environment}
+The environment of our software control system will depend somewhat on the state of the vehicle’s 
+production. Control system programming will initially be done in a software environment, negating 
+the need for hardware, until a concrete control system program exists. Simulation (using software 
+models) will be employed to verify basic functionality and catch unsafe conditions that may be 
+caused through control logic errors. The control system can then be compiled and tested on the 
+existing MAC Formula Electric electronics test bench, which includes all the vehicle ECU’s and 
+any hardware peripherals we require for input or output. Whether the control system ends up on 
+the final vehicle before the completion of our capstone depends on a large number of external team 
+factors such as chassis manufacturing, electrical integration and packaging, and push to the Formula 
+FSAE vehicle, and its corresponding controllers. 
+
+\newpage
+\section{Goals}
+
+\begin{table}[hp]
+\caption{Goals} \label{TblGoals}
+\begin{tabular}{p{0.2\textwidth}p{0.7\textwidth}}
+\toprule
+\textbf{Goal} & \textbf{Description}\\
+\midrule
+Reliability of output & Ensure that state of the vehicle 
+control system corresponds to the physical state of the 
+vehicle including motor RPM, battery state of charge, and 
+all driver inputs such as ready-to-drive button, emergency shutoff, 
+and pedal inputs. Validate that the control system accurately 
+takes feedback from the various vehicle sub-systems and commands 
+state changes as required. Verify that all commanded sub-system 
+state changes are as expected and can be replicated. \\
+FSAE rules compliance & Ensure that the vehicle startup and 
+shutdown sequence follow the FSAE rules. This will be achieved by 
+creating flowcharts depicting the required state of each model based 
+on user input and the rules-defined timing based state changes. We can 
+then validate the output state changes of our control system with our 
+flowchart for a 1:1 match.\\
+Maintainability & We will ensure future maintainability of our control 
+system by separating all sub-systems into individual simulink models and 
+controlling them via an overarching state machine. For example, we can 
+create a single model for controlling a motor, and then utilize that 
+model multiple times to enable a four-wheel drive system. We will also 
+ensure all our models are thoroughly documented both inside the Simulink 
+model itself and via project documentation.\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\newpage
+\section{Stretch Goals}
+
+\begin{table}[hp]
+\caption{Stretch Goals} \label{TblStretchGoals}
+\begin{tabular}{p{0.3\textwidth}p{0.6\textwidth}}
+\toprule
+\textbf{Goal} & \textbf{Description}\\
+\midrule
+Vehicle Dynamics - Stability Control Program & Stability control is a great 
+feature for keeping a 
+vehicle on the road, and heading towards an intended direction, commanded 
+by the driver. This is done by checking the position of the steering wheel, 
+and comparing it to the z-axis rotation of the vehicle. When the driver 
+commands a turn and the vehicle is slow to react, wheel slipping is detected. 
+To reduce/eliminate the loss of traction, the vehicle can brake the wheels 
+closest to the apex of a corner, to help apply a rotational moment on the 
+vehicle and assist the driver to turn the vehicle around a corner. \\
+Vehicle dynamics - torque vectoring & Torque vectoring works similar to a 
+vehicle stability control program, except in this case, the creation of a 
+moment on the z-axis of a vehicle is purely done through acceleration. This 
+means that when acceleration of the vehicle is requested through the accelerator 
+pedal, based on steering direction, the vehicle can vary torque to different sides 
+of a vehicle. Usually when going around a corner, the torque will be applied to 
+the wheels furthest from the corner apex, helping apply a moment on the z-axis of 
+the vehicle to help achieve higher cornering velocities along with increased driver 
+confidence.\\
+Over the air data acquisition & Over-the-air data acquisition will allow us to 
+gain vital vehicle data, while the vehicle is out running laps. This can help 
+us diagnose any issues live, if we see any anomalies in the control system, 
+increasing vehicle performance and safety.\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{document}
